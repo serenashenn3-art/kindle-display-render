@@ -1,0 +1,892 @@
+import os
+import uuid
+import json
+import random
+import requests
+import base64
+import io
+from datetime import datetime
+from PIL import Image, ImageEnhance
+from flask import Flask, request, render_template_string, send_from_directory
+
+app = Flask(__name__)
+
+# ==================== 生产环境配置 ====================
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB 上传限制
+
+# 内存配置存储（Render 免费版重启会清空，但展示用途重新配置即可）
+USER_CONFIGS = {}
+
+# ==================== Kindle 分辨率规格 ====================
+MODELS = {
+    "basic":  {"name": "Kindle 基础版",      "w": 600,  "h": 800},
+    "pw3":    {"name": "Paperwhite 1-3",     "w": 758,  "h": 1024},
+    "pw4":    {"name": "Paperwhite 4+",      "w": 758,  "h": 1024},
+    "oasis":  {"name": "Oasis / Scribe",     "w": 1264, "h": 1680},
+}
+
+# ==================== 词库（11 语种） ====================
+WORD_BANK = {
+    "english": {
+        "name": "英语", "flag": "🇺🇸",
+        "books": {
+            "cet4": {"name": "四级英语词汇", "words": [
+                {"word": "abandon", "phonetic": "/əˈbændən/", "meaning": "v. 放弃，抛弃", "example": "He abandoned his car in the snow."},
+                {"word": "ability", "phonetic": "/əˈbɪləti/", "meaning": "n. 能力，才能", "example": "She has the ability to speak four languages."},
+                {"word": "absolute", "phonetic": "/ˈæbsəluːt/", "meaning": "adj. 绝对的", "example": "I have absolute confidence in her."},
+                {"word": "academic", "phonetic": "/ˌækəˈdemɪk/", "meaning": "adj. 学术的", "example": "She had a brilliant academic career."},
+                {"word": "access", "phonetic": "/ˈækses/", "meaning": "n. 通道；使用权", "example": "Students need access to books."},
+            ]},
+            "cet6": {"name": "六级英语词汇", "words": [
+                {"word": "ambiguous", "phonetic": "/æmˈbɪɡjuəs/", "meaning": "adj. 模棱两可的", "example": "The instructions were ambiguous."},
+                {"word": "analogy", "phonetic": "/əˈnælədʒi/", "meaning": "n. 类比", "example": "He drew an analogy between the brain and a computer."},
+            ]},
+            "kaoyan": {"name": "考研英语词汇", "words": [
+                {"word": "advocate", "phonetic": "/ˈædvəkeɪt/", "meaning": "v. 提倡", "example": "She advocates taking a long-term view."},
+                {"word": "alleviate", "phonetic": "/əˈliːvieɪt/", "meaning": "v. 减轻", "example": "The medicine alleviated the pain."},
+            ]},
+            "ielts": {"name": "雅思核心词汇", "words": [
+                {"word": "contemporary", "phonetic": "/kənˈtempəreri/", "meaning": "adj. 当代的", "example": "Contemporary art is often controversial."},
+            ]},
+            "toefl": {"name": "托福核心词汇", "words": [
+                {"word": "substantial", "phonetic": "/səbˈstænʃl/", "meaning": "adj. 大量的", "example": "The project requires substantial funding."},
+            ]},
+            "gre": {"name": "GRE词汇", "words": [
+                {"word": "abate", "phonetic": "/əˈbeɪt/", "meaning": "v. 减弱", "example": "The storm began to abate."},
+            ]},
+            "business": {"name": "商务英语", "words": [
+                {"word": "deadline", "phonetic": "/ˈdedlaɪn/", "meaning": "n. 截止日期", "example": "We must meet the deadline."},
+            ]},
+        }
+    },
+    "japanese": {
+        "name": "日语", "flag": "🇯🇵",
+        "books": {
+            "n1": {"name": "JLPT N1", "words": [{"word": "意向", "phonetic": "いこう", "meaning": "意向，打算", "example": "彼の意向を確認した。"}]},
+            "n4": {"name": "JLPT N4", "words": [{"word": "約束", "phonetic": "やくそく", "meaning": "约定", "example": "約束を守ってください。"}]},
+            "n5": {"name": "JLPT N5", "words": [{"word": "学生", "phonetic": "がくせい", "meaning": "学生", "example": "私は大学生です。"}]},
+        }
+    },
+    "french": {
+        "name": "法语", "flag": "🇫🇷",
+        "books": {
+            "tef": {"name": "TEF/TCF核心词", "words": [{"word": "bonjour", "phonetic": "/bɔ̃ʒuʁ/", "meaning": "你好", "example": "Bonjour, comment allez-vous?"}]},
+            "basic_fr": {"name": "法语入门", "words": [{"word": "amour", "phonetic": "/amuʁ/", "meaning": "爱", "example": "L'amour est aveugle."}]},
+        }
+    },
+    "russian": {
+        "name": "俄语", "flag": "🇷🇺",
+        "books": {
+            "basic_ru": {"name": "俄语入门", "words": [{"word": "привет", "phonetic": "privet", "meaning": "你好", "example": "Привет, как дела?"}]},
+        }
+    },
+    "korean": {
+        "name": "韩语", "flag": "🇰🇷",
+        "books": {
+            "topik1": {"name": "TOPIK I", "words": [{"word": "안녕하세요", "phonetic": "annyeonghaseyo", "meaning": "你好", "example": "안녕하세요, 만나서 반갑습니다."}]},
+        }
+    },
+    "german": {
+        "name": "德语", "flag": "🇩🇪",
+        "books": {
+            "testdaf": {"name": "德福核心词", "words": [{"word": "Danke", "phonetic": "/ˈdaŋkə/", "meaning": "谢谢", "example": "Danke schön!"}]},
+        }
+    },
+    "italian": {
+        "name": "意大利语", "flag": "🇮🇹",
+        "books": {
+            "basic_it": {"name": "意大利语入门", "words": [{"word": "ciao", "phonetic": "/ˈtʃaːo/", "meaning": "你好/再见", "example": "Ciao, come stai?"}]},
+        }
+    },
+    "spanish": {
+        "name": "西班牙语", "flag": "🇪🇸",
+        "books": {
+            "dele": {"name": "DELE核心词", "words": [{"word": "hola", "phonetic": "/ˈola/", "meaning": "你好", "example": "¡Hola! ¿Cómo estás?"}]},
+        }
+    },
+    "cantonese": {
+        "name": "粤语", "flag": "🇭🇰",
+        "books": {
+            "basic_yue": {"name": "粤语入门", "words": [{"word": "你好", "phonetic": "nei5 hou2", "meaning": "你好", "example": "你好，我係陳先生。"}]},
+        }
+    },
+    "portuguese": {
+        "name": "葡萄牙语", "flag": "🇵🇹",
+        "books": {
+            "basic_pt": {"name": "葡萄牙语入门", "words": [{"word": "olá", "phonetic": "/oˈla/", "meaning": "你好", "example": "Olá, como estás?"}]},
+        }
+    },
+    "chinese": {
+        "name": "中文", "flag": "🇨🇳",
+        "books": {
+            "chengyu": {"name": "成语词典", "words": [{"word": "画龙点睛", "phonetic": "huà lóng diǎn jīng", "meaning": "比喻在关键处点明实质", "example": "这篇文章结尾真是画龙点睛。"}]},
+            "gushi": {"name": "古诗词名句", "words": [{"word": "海内存知己", "phonetic": "hǎi nèi cún zhī jǐ", "meaning": "四海之内有知心朋友", "example": "海内存知己，天涯若比邻。"}]},
+        }
+    },
+}
+
+# ==================== 天气 API ====================
+CITY_COORDS = {
+    "beijing": (39.9042, 116.4074), "shanghai": (31.2304, 121.4737),
+    "guangzhou": (23.1291, 113.2644), "shenzhen": (22.5431, 114.0579),
+    "chengdu": (30.5728, 104.0668), "hangzhou": (30.2741, 120.1551),
+    "wuhan": (30.5928, 114.3055), "xian": (34.3416, 108.9398),
+    "nanjing": (32.0603, 118.7969), "chongqing": (29.5630, 106.5516),
+    "tianjin": (39.0842, 117.2009), "suzhou": (31.2989, 120.5853),
+    "tokyo": (35.6762, 139.6503), "newyork": (40.7128, -74.0060),
+    "london": (51.5074, -0.1278), "paris": (48.8566, 2.3522),
+}
+
+WEATHER_CODES = {
+    0: "晴", 1: "多云", 2: "多云", 3: "阴",
+    45: "雾", 48: "雾凇",
+    51: "毛毛雨", 53: "小雨", 55: "中雨",
+    61: "小雨", 63: "中雨", 65: "大雨",
+    71: "小雪", 73: "中雪", 75: "大雪",
+    80: "阵雨", 81: "阵雨", 82: "暴雨",
+    95: "雷雨", 96: "雷雨伴冰雹", 99: "雷雨伴冰雹",
+}
+
+def get_weather(city_key):
+    try:
+        if city_key not in CITY_COORDS:
+            return {"temp": "--", "weather": "未知", "city": city_key}
+        lat, lon = CITY_COORDS[city_key]
+        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
+        r = requests.get(url, timeout=5)
+        data = r.json()
+        cw = data.get("current_weather", {})
+        code = cw.get("weathercode", 0)
+        temp = cw.get("temperature", 0)
+        return {"temp": f"{int(temp)}°C", "weather": WEATHER_CODES.get(code, "多云"), "city": city_key.capitalize()}
+    except Exception:
+        return {"temp": "22°C", "weather": "晴", "city": "Local"}
+
+
+# ==================== 刷新策略选择器（各模式默认不同） ====================
+REFRESH_OPTIONS = [
+    ("5", "5 秒（极速轮播）"),
+    ("10", "10 秒（番茄钟推荐）"),
+    ("15", "15 秒"),
+    ("30", "30 秒（相框推荐）"),
+    ("60", "1 分钟（时钟推荐）"),
+    ("180", "3 分钟"),
+    ("300", "5 分钟（看板/单词推荐）"),
+    ("600", "10 分钟"),
+    ("1800", "30 分钟"),
+    ("3600", "1 小时"),
+    ("0", "不自动刷新（纯静态）"),
+]
+
+def build_refresh_select(default_value="300"):
+    options = ""
+    for val, label in REFRESH_OPTIONS:
+        selected = "selected" if val == default_value else ""
+        options += f'<option value="{val}" {selected}>{label}</option>\n'
+    return f"""
+    <label>刷新策略</label>
+    <select name="interval">
+        {options}
+    </select>
+    <p class="hint">「不自动刷新」适合固定展示，Kindle 按刷新键手动更新</p>
+    """
+
+# ==================== 配置页面 HTML ====================
+CONFIG_HTML = """
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kindle 展示中心</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:#f5f6fa; padding:16px; max-width:560px; margin:0 auto; color:#1a1a1a; }
+.header { text-align:center; padding:24px 0 12px; }
+.header h1 { font-size:24px; margin-bottom:6px; }
+.header p { color:#666; font-size:14px; }
+.mode-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:16px 0; }
+.mode-card { background:#fff; border:2px solid #e5e5e5; border-radius:14px; padding:16px 8px; text-align:center; cursor:pointer; transition:all .2s; }
+.mode-card:hover { border-color:#999; }
+.mode-card.active { border-color:#1a1a1a; background:#1a1a1a; color:#fff; }
+.mode-card .icon { font-size:28px; margin-bottom:6px; display:block; }
+.mode-card .title { font-size:13px; font-weight:600; }
+.card { background:#fff; border-radius:14px; padding:20px; margin-bottom:14px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+.card h2 { font-size:15px; font-weight:600; margin-bottom:14px; color:#333; }
+label { display:block; margin-bottom:6px; font-size:14px; color:#444; font-weight:500; }
+input[type="text"], input[type="number"], input[type="date"], textarea, select {
+    width:100%; padding:12px; border:1.5px solid #e5e5e5; border-radius:10px; font-size:15px; margin-bottom:12px; background:#fafafa;
+}
+textarea { min-height:80px; resize:vertical; font-family:inherit; }
+.hint { font-size:12px; color:#999; margin-top:-8px; margin-bottom:12px; }
+.row { display:flex; gap:10px; }
+.row > * { flex:1; }
+.btn { width:100%; padding:16px; background:#1a1a1a; color:#fff; border:none; border-radius:14px; font-size:16px; font-weight:600; cursor:pointer; margin-top:8px; }
+.result { display:none; background:#e8f5e9; border:1.5px solid #4caf50; border-radius:14px; padding:20px; margin-top:16px; }
+.result h3 { color:#2e7d32; font-size:15px; margin-bottom:10px; }
+.url-box { background:#fff; padding:12px; border-radius:10px; font-family:monospace; font-size:13px; word-break:break-all; border:1px dashed #4caf50; }
+.tip { font-size:13px; color:#666; margin-top:16px; line-height:1.7; background:#fff; padding:16px; border-radius:14px; }
+.tip code { background:#f0f0f0; padding:2px 6px; border-radius:4px; font-family:monospace; }
+.hidden { display:none !important; }
+.checkbox-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.checkbox-row input { width:20px; height:20px; accent-color:#1a1a1a; }
+.file-input { padding:10px; border:2px dashed #ddd; border-radius:10px; text-align:center; margin-bottom:12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>📖 Kindle 展示中心</h1>
+    <p>6 种展示模式 · 刷新策略自由选 · 零越狱</p>
+</div>
+
+<form id="mainForm" action="/generate" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="mode" id="modeInput" value="info">
+
+    <div class="mode-grid">
+        <div class="mode-card active" data-mode="info" onclick="setMode(this)">
+            <span class="icon">📊</span>
+            <span class="title">信息面板</span>
+        </div>
+        <div class="mode-card" data-mode="board" onclick="setMode(this)">
+            <span class="icon">📋</span>
+            <span class="title">个人看板</span>
+        </div>
+        <div class="mode-card" data-mode="frame" onclick="setMode(this)">
+            <span class="icon">🖼</span>
+            <span class="title">电子相框</span>
+        </div>
+        <div class="mode-card" data-mode="reading" onclick="setMode(this)">
+            <span class="icon">📚</span>
+            <span class="title">阅读进度</span>
+        </div>
+        <div class="mode-card" data-mode="pomodoro" onclick="setMode(this)">
+            <span class="icon">🍅</span>
+            <span class="title">番茄钟</span>
+        </div>
+        <div class="mode-card" data-mode="words" onclick="setMode(this)">
+            <span class="icon">🔤</span>
+            <span class="title">单词卡片</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>通用设置</h2>
+        <label>Kindle 型号</label>
+        <select name="model">
+            <option value="pw4">Paperwhite 4+ (758×1024)</option>
+            <option value="pw3">Paperwhite 1-3 (758×1024)</option>
+            <option value="basic">Kindle 基础版 (600×800)</option>
+            <option value="oasis">Oasis / Scribe (1264×1680)</option>
+        </select>
+    </div>
+
+    <div id="panel-info" class="card">
+        <h2>📊 信息面板设置</h2>
+        <label>城市</label>
+        <select name="city">
+            <option value="beijing">北京</option>
+            <option value="shanghai">上海</option>
+            <option value="guangzhou">广州</option>
+            <option value="shenzhen">深圳</option>
+            <option value="chengdu">成都</option>
+            <option value="hangzhou">杭州</option>
+            <option value="wuhan">武汉</option>
+            <option value="xian">西安</option>
+            <option value="nanjing">南京</option>
+            <option value="chongqing">重庆</option>
+            <option value="tianjin">天津</option>
+            <option value="suzhou">苏州</option>
+            <option value="tokyo">东京</option>
+            <option value="newyork">纽约</option>
+            <option value="london">伦敦</option>
+            <option value="paris">巴黎</option>
+        </select>
+        """ + build_refresh_select("60") + """
+    </div>
+
+    <div id="panel-board" class="card hidden">
+        <h2>📋 个人看板设置</h2>
+        <label>待办事项（每行一个）</label>
+        <textarea name="todos" placeholder="完成报告&#10;预约牙医&#10;买牛奶"></textarea>
+        <label>纪念日（格式：名称|日期，每行一个）</label>
+        <textarea name="events" placeholder="结婚纪念日|2025-05-20&#10;生日|1995-08-15"></textarea>
+        <p class="hint">日期格式：YYYY-MM-DD，自动计算剩余天数</p>
+        <label>习惯打卡（每行一个）</label>
+        <textarea name="habits" placeholder="早起&#10;阅读30分钟&#10;运动"></textarea>
+        """ + build_refresh_select("300") + """
+    </div>
+
+    <div id="panel-frame" class="card hidden">
+        <h2>🖼 电子相框设置</h2>
+        <label>上传照片（可多张，建议 3-10 张）</label>
+        <input type="file" name="photos" multiple accept="image/*" class="file-input">
+        <p class="hint">后端自动转为 E-ink 灰度高对比度图片</p>
+        """ + build_refresh_select("30") + """
+    </div>
+
+    <div id="panel-reading" class="card hidden">
+        <h2>📚 阅读进度设置</h2>
+        <label>书籍信息（格式：书名|当前页|总页数，每行一本）</label>
+        <textarea name="books" placeholder="三体|280|400&#10;百年孤独|120|360&#10;人类简史|45|300"></textarea>
+        <p class="hint">自动计算阅读百分比并渲染进度条</p>
+        """ + build_refresh_select("300") + """
+    </div>
+
+    <div id="panel-pomodoro" class="card hidden">
+        <h2>🍅 番茄钟设置</h2>
+        <label>专注时长（分钟）</label>
+        <input type="number" name="duration" value="25" min="1" max="120">
+        <label>任务名称</label>
+        <input type="text" name="task_name" placeholder="例如：写论文、背单词">
+        <label>倒计时刷新精度</label>
+        <select name="interval">
+            <option value="1">1 秒（高精度，Kindle 刷新频繁）</option>
+            <option value="5">5 秒</option>
+            <option value="10" selected>10 秒（推荐平衡）</option>
+            <option value="30">30 秒</option>
+            <option value="60">1 分钟</option>
+            <option value="0">不自动刷新（需手动按刷新键）</option>
+        </select>
+        <p class="hint">E-ink 屏幕刷新有闪烁，10 秒是精度与体验的平衡</p>
+    </div>
+
+    <div id="panel-words" class="card hidden">
+        <h2>🔤 单词卡片设置</h2>
+        <label>语种</label>
+        <select name="language" id="langSelect" onchange="updateBooks()">
+            {% for k,v in wordbank.items() %}
+            <option value="{{ k }}">{{ v.flag }} {{ v.name }}</option>
+            {% endfor %}
+        </select>
+        <label>词书</label>
+        <select name="book" id="bookSelect"></select>
+        <label>显示内容</label>
+        <div class="checkbox-row"><input type="checkbox" name="show_phonetic" checked><span>音标/发音</span></div>
+        <div class="checkbox-row"><input type="checkbox" name="show_meaning" checked><span>释义</span></div>
+        <div class="checkbox-row"><input type="checkbox" name="show_example" checked><span>例句</span></div>
+        <div class="checkbox-row"><input type="checkbox" name="show_progress" checked><span>进度</span></div>
+        """ + build_refresh_select("300") + """
+    </div>
+
+    <button type="submit" class="btn">生成 Kindle 展示链接</button>
+</form>
+
+<div class="tip">
+    <strong>📌 Kindle 使用步骤：</strong><br>
+    1. 连接 WiFi → 打开「体验版浏览器」<br>
+    2. 输入生成的链接地址<br>
+    3. 在搜索框输入 <code>~ds</code> 并按回车（禁止锁屏）<br>
+    4. 插上电源，即可长期展示
+</div>
+
+<script>
+const bookData = {{ books_json|safe }};
+function setMode(el) {
+    document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    const mode = el.dataset.mode;
+    document.getElementById('modeInput').value = mode;
+    document.querySelectorAll('[id^="panel-"]').forEach(p => p.classList.add('hidden'));
+    document.getElementById('panel-' + mode).classList.remove('hidden');
+}
+function updateBooks() {
+    const lang = document.getElementById('langSelect').value;
+    const sel = document.getElementById('bookSelect');
+    sel.innerHTML = '';
+    const books = bookData[lang] || {};
+    for (const [k, v] of Object.entries(books)) {
+        const opt = document.createElement('option');
+        opt.value = k; opt.textContent = v.name;
+        sel.appendChild(opt);
+    }
+}
+updateBooks();
+</script>
+
+</body>
+</html>
+"""
+
+# ==================== Kindle 展示模板 ====================
+
+TMPL_INFO = """
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+{% if interval > 0 %}<meta http-equiv="refresh" content="{{ interval }}">{% endif %}
+<title>Kindle Info</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
+    font-family:"Georgia","Times New Roman",serif; display:flex; flex-direction:column;
+    justify-content:center; align-items:center; overflow:hidden; position:relative; }
+.time { font-size:{{ t_time }}px; font-weight:bold; margin-bottom:10px; letter-spacing:2px; }
+.date { font-size:{{ t_date }}px; color:#333; margin-bottom:30px; }
+.divider { width:60px; height:2px; background:#000; margin:20px 0; }
+.weather-row { display:flex; align-items:center; gap:20px; font-size:{{ t_body }}px; }
+.weather-item { text-align:center; }
+.weather-label { font-size:{{ t_small }}px; color:#666; margin-bottom:4px; }
+.city { position:absolute; top:{{ pad }}px; right:{{ pad }}px; font-size:{{ t_small }}px; color:#777; border:1px solid #999; padding:4px 10px; border-radius:12px; }
+.footer { position:absolute; bottom:{{ pad }}px; font-size:{{ t_small }}px; color:#999; }
+{% if interval == 0 %}.static-badge { position:absolute; top:{{ pad }}px; left:{{ pad }}px; font-size:{{ t_small }}px; color:#999; border:1px solid #ccc; padding:3px 8px; border-radius:8px; }{% endif %}
+</style></head>
+<body>
+{% if interval == 0 %}<div class="static-badge">静态模式</div>{% endif %}
+<div class="city">{{ city }}</div>
+<div class="time">{{ time }}</div>
+<div class="date">{{ date }}</div>
+<div class="divider"></div>
+<div class="weather-row">
+    <div class="weather-item"><div class="weather-label">天气</div><div>{{ weather }}</div></div>
+    <div class="weather-item"><div class="weather-label">温度</div><div>{{ temp }}</div></div>
+</div>
+<div class="footer">Kindle Info Panel</div>
+</body></html>
+"""
+
+TMPL_BOARD = """
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+{% if interval > 0 %}<meta http-equiv="refresh" content="{{ interval }}">{% endif %}
+<title>Kindle Board</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
+    font-family:"Georgia","Times New Roman",serif; padding:{{ pad }}px; overflow:hidden; position:relative; }
+h1 { font-size:{{ t_title }}px; margin-bottom:16px; border-bottom:2px solid #000; padding-bottom:8px; }
+.section { margin-bottom:20px; }
+.section-title { font-size:{{ t_sub }}px; font-weight:bold; margin-bottom:8px; color:#333; }
+.todo-item, .event-item, .habit-item { font-size:{{ t_body }}px; margin-bottom:6px; line-height:1.4; }
+.event-days { color:#d32f2f; font-weight:bold; }
+.habit-bar { width:100%; height:8px; background:#eee; border-radius:4px; margin-top:4px; overflow:hidden; }
+.habit-fill { height:100%; background:#000; border-radius:4px; }
+.footer { position:absolute; bottom:{{ pad }}px; left:{{ pad }}px; font-size:{{ t_small }}px; color:#999; }
+{% if interval == 0 %}.static-badge { position:absolute; top:{{ pad }}px; right:{{ pad }}px; font-size:{{ t_small }}px; color:#999; border:1px solid #ccc; padding:3px 8px; border-radius:8px; }{% endif %}
+</style></head>
+<body>
+{% if interval == 0 %}<div class="static-badge">静态模式</div>{% endif %}
+<h1>📋 今日看板</h1>
+{% if todos %}
+<div class="section">
+    <div class="section-title">待办事项</div>
+    {% for t in todos %}<div class="todo-item">• {{ t }}</div>{% endfor %}
+</div>
+{% endif %}
+{% if events %}
+<div class="section">
+    <div class="section-title">纪念日</div>
+    {% for e in events %}<div class="event-item">{{ e.name }} — <span class="event-days">{{ e.days }}</span></div>{% endfor %}
+</div>
+{% endif %}
+{% if habits %}
+<div class="section">
+    <div class="section-title">习惯打卡</div>
+    {% for h in habits %}
+    <div class="habit-item">{{ h.name }}<div class="habit-bar"><div class="habit-fill" style="width:{{ h.pct }}%"></div></div></div>
+    {% endfor %}
+</div>
+{% endif %}
+<div class="footer">Kindle Board</div>
+</body></html>
+"""
+
+TMPL_FRAME = """
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+{% if interval > 0 %}<meta http-equiv="refresh" content="{{ interval }};url={{ next_url }}">{% endif %}
+<title>Kindle Frame</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { width:{{ w }}px; height:{{ h }}px; background:#000; display:flex;
+    justify-content:center; align-items:center; overflow:hidden; position:relative; }
+img { max-width:100%; max-height:100%; object-fit:contain; filter:contrast(1.2); }
+.counter { position:absolute; bottom:20px; right:20px; font-size:14px; color:#fff;
+    background:rgba(0,0,0,0.5); padding:4px 10px; border-radius:10px; font-family:Arial; }
+{% if interval == 0 %}.static-badge { position:absolute; top:20px; left:20px; font-size:12px; color:#fff; background:rgba(0,0,0,0.5); padding:3px 8px; border-radius:8px; }{% endif %}
+</style></head>
+<body>
+{% if interval == 0 %}<div class="static-badge">静态模式</div>{% endif %}
+<img src="{{ img_url }}" alt="frame">
+<div class="counter">{{ cur }} / {{ total }}</div>
+</body></html>
+"""
+
+TMPL_READING = """
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+{% if interval > 0 %}<meta http-equiv="refresh" content="{{ interval }}">{% endif %}
+<title>Kindle Reading</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
+    font-family:"Georgia","Times New Roman",serif; padding:{{ pad }}px; overflow:hidden; position:relative; }
+h1 { font-size:{{ t_title }}px; margin-bottom:20px; border-bottom:2px solid #000; padding-bottom:8px; }
+.book { margin-bottom:18px; }
+.book-name { font-size:{{ t_sub }}px; font-weight:bold; margin-bottom:6px; }
+.book-meta { font-size:{{ t_body }}px; color:#333; margin-bottom:4px; }
+.progress-bg { width:100%; height:10px; background:#eee; border-radius:5px; overflow:hidden; }
+.progress-fill { height:100%; background:#000; border-radius:5px; }
+.footer { position:absolute; bottom:{{ pad }}px; left:{{ pad }}px; font-size:{{ t_small }}px; color:#999; }
+{% if interval == 0 %}.static-badge { position:absolute; top:{{ pad }}px; right:{{ pad }}px; font-size:{{ t_small }}px; color:#999; border:1px solid #ccc; padding:3px 8px; border-radius:8px; }{% endif %}
+</style></head>
+<body>
+{% if interval == 0 %}<div class="static-badge">静态模式</div>{% endif %}
+<h1>📚 阅读进度</h1>
+{% for b in books %}
+<div class="book">
+    <div class="book-name">{{ b.name }}</div>
+    <div class="book-meta">{{ b.current }} / {{ b.total }} 页 · {{ b.pct }}%</div>
+    <div class="progress-bg"><div class="progress-fill" style="width:{{ b.pct }}%"></div></div>
+</div>
+{% endfor %}
+<div class="footer">Kindle Reading</div>
+</body></html>
+"""
+
+TMPL_POMO = """
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+{% if interval > 0 %}<meta http-equiv="refresh" content="{{ interval }}">{% endif %}
+<title>Kindle Pomodoro</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
+    font-family:"Georgia","Times New Roman",serif; display:flex; flex-direction:column;
+    justify-content:center; align-items:center; overflow:hidden; position:relative; }
+.task { font-size:{{ t_sub }}px; color:#555; margin-bottom:20px; text-align:center; max-width:80%; }
+.time-left { font-size:{{ t_time }}px; font-weight:bold; margin-bottom:16px; letter-spacing:2px; }
+.progress-bg { width:70%; height:14px; background:#eee; border-radius:7px; overflow:hidden; margin-bottom:10px; }
+.progress-fill { height:100%; background:#000; border-radius:7px; }
+.pct { font-size:{{ t_body }}px; color:#666; }
+.status { font-size:{{ t_sub }}px; margin-top:20px; font-weight:bold; }
+.footer { position:absolute; bottom:{{ pad }}px; font-size:{{ t_small }}px; color:#999; }
+{% if interval == 0 %}.static-badge { position:absolute; top:{{ pad }}px; right:{{ pad }}px; font-size:{{ t_small }}px; color:#999; border:1px solid #ccc; padding:3px 8px; border-radius:8px; }{% endif %}
+</style></head>
+<body>
+{% if interval == 0 %}<div class="static-badge">静态模式</div>{% endif %}
+<div class="task">{{ task }}</div>
+<div class="time-left">{{ time_left }}</div>
+<div class="progress-bg"><div class="progress-fill" style="width:{{ pct }}%"></div></div>
+<div class="pct">{{ pct }}%</div>
+<div class="status">{{ status }}</div>
+<div class="footer">Kindle Pomodoro</div>
+</body></html>
+"""
+
+TMPL_WORDS = """
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+{% if interval > 0 %}<meta http-equiv="refresh" content="{{ interval }}">{% endif %}
+<title>Kindle Word</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
+    font-family:"Georgia","Times New Roman",serif; display:flex; flex-direction:column;
+    justify-content:center; align-items:center; padding:{{ pad }}px; overflow:hidden; position:relative; }
+.lang-tag { position:absolute; top:{{ pad_s }}px; right:{{ pad_s }}px; font-size:{{ t_small }}px; color:#555; border:1px solid #999; padding:3px 10px; border-radius:12px; font-family:Arial; }
+.book-tag { position:absolute; top:{{ pad_s }}px; left:{{ pad_s }}px; font-size:{{ t_small }}px; color:#777; font-family:Arial; }
+.word { font-size:{{ t_word }}px; font-weight:bold; margin-bottom:10px; text-align:center; line-height:1.2; }
+.phonetic { font-size:{{ t_sub }}px; color:#333; margin-bottom:18px; font-family:Arial; }
+.divider { width:50px; height:2px; background:#000; margin:14px 0; }
+.meaning { font-size:{{ t_body }}px; margin-bottom:14px; text-align:center; line-height:1.5; padding:0 20px; }
+.example { font-size:{{ t_small2 }}px; color:#333; font-style:italic; text-align:center; line-height:1.5; max-width:85%; }
+.progress { position:absolute; bottom:{{ pad_s }}px; font-size:{{ t_small }}px; color:#555; font-family:Arial; }
+.footer-line { position:absolute; bottom:{{ pad_s }}px; left:{{ pad_s }}px; font-size:{{ t_small }}px; color:#999; }
+{% if interval == 0 %}.static-badge { position:absolute; top:{{ pad_s }}px; right:{{ pad_s }}px; font-size:{{ t_small }}px; color:#999; border:1px solid #ccc; padding:3px 8px; border-radius:8px; }{% endif %}
+</style></head>
+<body>
+{% if interval == 0 %}<div class="static-badge">静态模式</div>{% endif %}
+<div class="book-tag">{{ book_name }}</div>
+<div class="lang-tag">{{ lang_flag }}</div>
+<div class="word">{{ word }}</div>
+{% if show_phonetic %}<div class="phonetic">{{ phonetic }}</div>{% endif %}
+<div class="divider"></div>
+{% if show_meaning %}<div class="meaning">{{ meaning }}</div>{% endif %}
+{% if show_example %}<div class="example">{{ example }}</div>{% endif %}
+{% if show_progress %}<div class="progress">{{ current }} / {{ total }}</div>{% endif %}
+<div class="footer-line">Kindle Word</div>
+</body></html>
+"""
+
+
+# ==================== 路由 ====================
+
+@app.route("/")
+def index():
+    books_js = {}
+    for lk, lv in WORD_BANK.items():
+        books_js[lk] = {bk: {"name": bv["name"]} for bk, bv in lv["books"].items()}
+    return render_template_string(CONFIG_HTML, wordbank=WORD_BANK, books_json=json.dumps(books_js))
+
+
+@app.route("/generate", methods=["POST"])
+def generate():
+    mode = request.form.get("mode", "info")
+    model_key = request.form.get("model", "pw4")
+    model = MODELS.get(model_key, MODELS["pw4"])
+    cfg_id = str(uuid.uuid4())[:8]
+
+    interval = int(request.form.get("interval", 300))
+
+    base_cfg = {
+        "mode": mode,
+        "model": model_key,
+        "interval": interval,
+        "w": model["w"],
+        "h": model["h"],
+    }
+
+    if mode == "info":
+        base_cfg.update({"city": request.form.get("city", "beijing")})
+
+    elif mode == "board":
+        todos = [t.strip() for t in request.form.get("todos", "").split("\n") if t.strip()]
+        events_raw = [e.strip() for e in request.form.get("events", "").split("\n") if e.strip()]
+        habits = [h.strip() for h in request.form.get("habits", "").split("\n") if h.strip()]
+        events = []
+        for er in events_raw:
+            if "|" in er:
+                name, date_str = er.split("|", 1)
+                try:
+                    target = datetime.strptime(date_str.strip(), "%Y-%m-%d")
+                    today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+                    delta = (target - today).days
+                    if delta < 0:
+                        events.append({"name": name.strip(), "days": "已过去"})
+                    elif delta == 0:
+                        events.append({"name": name.strip(), "days": "就是今天！"})
+                    else:
+                        events.append({"name": name.strip(), "days": f"还有 {delta} 天"})
+                except Exception:
+                    events.append({"name": name.strip(), "days": "日期格式错误"})
+        habits_out = []
+        for i, h in enumerate(habits):
+            pct = ((i * 37 + datetime.now().day * 13) % 100)
+            habits_out.append({"name": h, "pct": pct})
+        base_cfg.update({"todos": todos, "events": events, "habits": habits_out})
+
+    elif mode == "frame":
+        files = request.files.getlist("photos")
+        processed = []
+        for f in files:
+            if f and f.filename:
+                uid = str(uuid.uuid4())[:8]
+                ext = os.path.splitext(f.filename)[1].lower() or ".jpg"
+                save_name = f"{cfg_id}_{uid}{ext}"
+                save_path = os.path.join(app.config['UPLOAD_FOLDER'], save_name)
+                img = Image.open(f.stream)
+                img = img.convert("L")
+                enhancer = ImageEnhance.Contrast(img)
+                img = enhancer.enhance(1.4)
+                img.thumbnail((model["w"], model["h"]), Image.LANCZOS)
+                img.save(save_path, "JPEG", quality=90)
+                processed.append(save_name)
+        base_cfg.update({"photos": processed, "photo_count": len(processed)})
+
+    elif mode == "reading":
+        books_raw = [b.strip() for b in request.form.get("books", "").split("\n") if b.strip()]
+        books = []
+        for br in books_raw:
+            if "|" in br:
+                parts = br.split("|")
+                if len(parts) >= 3:
+                    try:
+                        cur, tot = int(parts[1].strip()), int(parts[2].strip())
+                        pct = min(100, max(0, int(cur / tot * 100)))
+                        books.append({"name": parts[0].strip(), "current": cur, "total": tot, "pct": pct})
+                    except Exception:
+                        pass
+        base_cfg.update({"books": books})
+
+    elif mode == "pomodoro":
+        duration = int(request.form.get("duration", 25))
+        base_cfg.update({
+            "duration": duration,
+            "task_name": request.form.get("task_name", "专注中") or "专注中",
+            "start_time": datetime.now().isoformat(),
+        })
+
+    elif mode == "words":
+        lang = request.form.get("language", "english")
+        book = request.form.get("book", "cet4")
+        words = WORD_BANK.get(lang, {}).get("books", {}).get(book, {}).get("words", [])
+        base_cfg.update({
+            "language": lang,
+            "book": book,
+            "words": words,
+            "total": len(words),
+            "book_name": WORD_BANK.get(lang, {}).get("books", {}).get(book, {}).get("name", ""),
+            "lang_flag": WORD_BANK.get(lang, {}).get("flag", "🇺🇸"),
+            "show_phonetic": "show_phonetic" in request.form,
+            "show_meaning": "show_meaning" in request.form,
+            "show_example": "show_example" in request.form,
+            "show_progress": "show_progress" in request.form,
+        })
+
+    USER_CONFIGS[cfg_id] = base_cfg
+
+    show_url = f"{request.host_url}show?id={cfg_id}"
+    return f"""
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>配置完成</title>
+        <style>
+            body {{ font-family:-apple-system,sans-serif; padding:20px; max-width:520px; margin:0 auto; background:#f5f6fa; }}
+            .card {{ background:#fff; border-radius:16px; padding:24px; box-shadow:0 1px 3px rgba(0,0,0,.06); }}
+            h1 {{ font-size:20px; margin-bottom:8px; }}
+            .subtitle {{ color:#666; font-size:14px; margin-bottom:20px; }}
+            .url-box {{ background:#f5f5f5; padding:14px; border-radius:10px; font-family:monospace; font-size:13px; word-break:break-all; border:1px dashed #999; margin:12px 0; }}
+            .btn {{ display:block; width:100%; padding:14px; background:#1a1a1a; color:#fff; text-align:center; border-radius:12px; text-decoration:none; margin-top:10px; font-size:15px; }}
+            .tip {{ font-size:13px; color:#555; margin-top:16px; line-height:1.7; }}
+            .tip code {{ background:#f0f0f0; padding:2px 6px; border-radius:4px; font-family:monospace; }}
+            .success {{ color:#4caf50; font-weight:600; margin-bottom:8px; }}
+            .badge {{ display:inline-block; background:#1a1a1a; color:#fff; padding:4px 10px; border-radius:8px; font-size:12px; margin-right:6px; }}
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <div class="success">✅ 配置生成成功</div>
+            <h1>你的专属 Kindle 展示链接</h1>
+            <p class="subtitle">
+                <span class="badge">{mode}</span>
+                <span class="badge">{model['name']}</span>
+                <span class="badge">刷新: {interval if interval > 0 else '静态'}</span>
+            </p>
+            <div class="url-box">{show_url}</div>
+            <a href="{show_url}" class="btn" target="_blank">点击预览效果</a>
+            <div class="tip">
+                <strong>Kindle 使用步骤：</strong><br>
+                1. 连接 WiFi → 打开「体验版浏览器」<br>
+                2. 输入上方链接（建议添加到书签）<br>
+                3. 在搜索框输入 <code>~ds</code> 并按回车（禁止锁屏）<br>
+                4. 插上电源，长期展示即可
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+
+@app.route("/show")
+def show():
+    cfg_id = request.args.get("id")
+    if not cfg_id or cfg_id not in USER_CONFIGS:
+        return "配置不存在", 404
+
+    cfg = USER_CONFIGS[cfg_id]
+    mode = cfg["mode"]
+    m = MODELS.get(cfg.get("model", "pw4"), MODELS["pw4"])
+    w, h = m["w"], m["h"]
+    pad = 48 if m["w"] == 758 else (36 if m["w"] == 600 else 64)
+    interval = cfg.get("interval", 300)
+
+    if mode == "info":
+        now = datetime.now()
+        weather = get_weather(cfg.get("city", "beijing"))
+        return render_template_string(TMPL_INFO,
+            interval=interval,
+            w=w, h=h, pad=pad,
+            t_time=int(h*0.12), t_date=int(h*0.045), t_body=int(h*0.035), t_small=int(h*0.022),
+            time=now.strftime("%H:%M"),
+            date=now.strftime("%Y年%m月%d日 %a"),
+            city=weather["city"],
+            weather=weather["weather"],
+            temp=weather["temp"])
+
+    elif mode == "board":
+        return render_template_string(TMPL_BOARD,
+            interval=interval,
+            w=w, h=h, pad=pad,
+            t_title=int(h*0.05), t_sub=int(h*0.032), t_body=int(h*0.026), t_small=int(h*0.02),
+            todos=cfg.get("todos", []),
+            events=cfg.get("events", []),
+            habits=cfg.get("habits", []))
+
+    elif mode == "frame":
+        photos = cfg.get("photos", [])
+        if not photos:
+            return "没有上传图片", 400
+        idx = int(request.args.get("idx", 0)) % len(photos)
+        next_idx = (idx + 1) % len(photos)
+        img_url = f"{request.host_url}uploads/{photos[idx]}"
+        next_url = f"{request.host_url}show?id={cfg_id}&idx={next_idx}"
+        return render_template_string(TMPL_FRAME,
+            interval=interval,
+            w=w, h=h,
+            img_url=img_url,
+            next_url=next_url,
+            cur=idx+1, total=len(photos))
+
+    elif mode == "reading":
+        return render_template_string(TMPL_READING,
+            interval=interval,
+            w=w, h=h, pad=pad,
+            t_title=int(h*0.05), t_sub=int(h*0.032), t_body=int(h*0.026), t_small=int(h*0.02),
+            books=cfg.get("books", []))
+
+    elif mode == "pomodoro":
+        start = datetime.fromisoformat(cfg["start_time"])
+        duration_min = cfg["duration"]
+        total_sec = duration_min * 60
+        elapsed = (datetime.now() - start).total_seconds()
+        remaining = total_sec - elapsed
+
+        if remaining <= 0:
+            time_left = "00:00"
+            pct = 100
+            status = "✅ 专注完成！"
+        else:
+            mins, secs = divmod(int(remaining), 60)
+            time_left = f"{mins:02d}:{secs:02d}"
+            pct = min(100, int((elapsed / total_sec) * 100))
+            status = "🔔 专注中..."
+
+        return render_template_string(TMPL_POMO,
+            interval=interval,
+            w=w, h=h, pad=pad,
+            t_time=int(h*0.14), t_sub=int(h*0.04), t_body=int(h*0.03), t_small=int(h*0.022),
+            task=cfg.get("task_name", "专注中"),
+            time_left=time_left,
+            pct=pct,
+            status=status)
+
+    elif mode == "words":
+        words = cfg.get("words", [])
+        if not words:
+            return "词书为空", 400
+        idx = random.randint(0, len(words) - 1)
+        wdata = words[idx]
+        return render_template_string(TMPL_WORDS,
+            interval=interval,
+            w=w, h=h, pad=pad, pad_s=int(pad*0.5),
+            t_word=int(h*0.09), t_sub=int(h*0.035), t_body=int(h*0.03), t_small=int(h*0.022), t_small2=int(h*0.025),
+            word=wdata["word"],
+            phonetic=wdata.get("phonetic", ""),
+            meaning=wdata.get("meaning", ""),
+            example=wdata.get("example", ""),
+            book_name=cfg.get("book_name", ""),
+            lang_flag=cfg.get("lang_flag", "🇺🇸"),
+            show_phonetic=cfg.get("show_phonetic", True),
+            show_meaning=cfg.get("show_meaning", True),
+            show_example=cfg.get("show_example", True),
+            show_progress=cfg.get("show_progress", True),
+            current=idx+1,
+            total=cfg.get("total", 1))
+
+    return "未知模式", 400
+
+
+@app.route("/uploads/<filename>")
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
