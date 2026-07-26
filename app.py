@@ -134,6 +134,46 @@ WORD_BANK = {
     },
 }
 
+# ==================== 远程扩充词库（启动时拉取，失败用内置词库兜底） ====================
+# 扩充词库来源：词条/音标/释义来自 ECDICT（MIT 开源词典），例句来自 tatoeba.org（CC-BY 2.0 FR）
+REMOTE_BANK_URLS = [
+    "https://raw.githubusercontent.com/serenashenn3-art/kindle-display-render/main/words_extra.b64",
+    "https://paste.rs/PydxG",
+]
+
+def load_remote_bank():
+    for url in REMOTE_BANK_URLS:
+        try:
+            r = requests.get(url, timeout=12)
+            raw = r.content
+            try:
+                data = json.loads(zlib.decompress(base64.b64decode(raw)).decode("utf-8"))
+            except Exception:
+                data = json.loads(raw.decode("utf-8"))
+            eng = (data or {}).get("english") or {}
+            n = 0
+            for bk, pack in eng.items():
+                words = pack.get("words") if isinstance(pack, dict) else pack
+                if bk in WORD_BANK["english"]["books"] and words:
+                    WORD_BANK["english"]["books"][bk]["words"] = [
+                        {"word": w["w"], "phonetic": w.get("p", ""), "meaning": w.get("m", ""),
+                         "example": w.get("e", ""), "example_cn": w.get("c", "")}
+                        for w in words]
+                    if isinstance(pack, dict) and pack.get("name"):
+                        WORD_BANK["english"]["books"][bk]["name"] = pack["name"]
+                    n += len(words)
+            if n > 100:
+                print(f"[wordbank] loaded {n} words from {url}")
+                return True
+        except Exception as exc:
+            print(f"[wordbank] fetch failed {url}: {exc}")
+    return False
+
+try:
+    load_remote_bank()
+except Exception:
+    pass
+
 # ==================== 天气 API ====================
 CITY_COORDS = {
     "beijing": (39.9042, 116.4074), "shanghai": (31.2304, 121.4737),
