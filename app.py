@@ -22,109 +22,113 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB 上传限制
 USER_CONFIGS = {}
 
 # ==================== Kindle 分辨率规格 ====================
+# chrome = 浏览器顶部工具栏占用高度（px，估算值），用于计算可视区域居中
 MODELS = {
-    "basic":  {"name": "Kindle 基础版",      "w": 600,  "h": 800},
-    "pw3":    {"name": "Paperwhite 1-3",     "w": 758,  "h": 1024},
-    "pw4":    {"name": "Paperwhite 4+",      "w": 758,  "h": 1024},
-    "oasis":  {"name": "Oasis / Scribe",     "w": 1264, "h": 1680},
+    "basic":   {"name": "Kindle 基础版 第10代及以前", "w": 600,  "h": 800,  "chrome": 55},
+    "basic11": {"name": "Kindle 基础版 第11代",       "w": 758,  "h": 1024, "chrome": 90},
+    "pw3":     {"name": "Paperwhite 第7代及以前",     "w": 758,  "h": 1024, "chrome": 90},
+    "pw4":     {"name": "Paperwhite 第10代",          "w": 758,  "h": 1024, "chrome": 90},
+    "pw5":     {"name": "Paperwhite 第11代",          "w": 1236, "h": 1648, "chrome": 90},
+    "oasis":   {"name": "Oasis 第9/10代",             "w": 1264, "h": 1680, "chrome": 90},
+    "scribe":  {"name": "Scribe",                     "w": 1860, "h": 2480, "chrome": 90},
 }
 
-# ==================== 词库（11 语种） ====================
+# ==================== 词库（11 语种，例句附中文翻译） ====================
 WORD_BANK = {
     "english": {
         "name": "英语", "flag": "🇺🇸",
         "books": {
             "cet4": {"name": "四级英语词汇", "words": [
-                {"word": "abandon", "phonetic": "/əˈbændən/", "meaning": "v. 放弃，抛弃", "example": "He abandoned his car in the snow."},
-                {"word": "ability", "phonetic": "/əˈbɪləti/", "meaning": "n. 能力，才能", "example": "She has the ability to speak four languages."},
-                {"word": "absolute", "phonetic": "/ˈæbsəluːt/", "meaning": "adj. 绝对的", "example": "I have absolute confidence in her."},
-                {"word": "academic", "phonetic": "/ˌækəˈdemɪk/", "meaning": "adj. 学术的", "example": "She had a brilliant academic career."},
-                {"word": "access", "phonetic": "/ˈækses/", "meaning": "n. 通道；使用权", "example": "Students need access to books."},
+                {"word": "abandon", "phonetic": "/əˈbændən/", "meaning": "v. 放弃，抛弃", "example": "He abandoned his car in the snow.", "example_cn": "他把车丢在了雪地里。"},
+                {"word": "ability", "phonetic": "/əˈbɪləti/", "meaning": "n. 能力，才能", "example": "She has the ability to speak four languages.", "example_cn": "她会说四种语言。"},
+                {"word": "absolute", "phonetic": "/ˈæbsəluːt/", "meaning": "adj. 绝对的", "example": "I have absolute confidence in her.", "example_cn": "我对她有绝对的信心。"},
+                {"word": "academic", "phonetic": "/ˌækəˈdemɪk/", "meaning": "adj. 学术的", "example": "She had a brilliant academic career.", "example_cn": "她的学术生涯非常辉煌。"},
+                {"word": "access", "phonetic": "/ˈækses/", "meaning": "n. 通道；使用权", "example": "Students need access to books.", "example_cn": "学生需要能接触到书籍。"},
             ]},
             "cet6": {"name": "六级英语词汇", "words": [
-                {"word": "ambiguous", "phonetic": "/æmˈbɪɡjuəs/", "meaning": "adj. 模棱两可的", "example": "The instructions were ambiguous."},
-                {"word": "analogy", "phonetic": "/əˈnælədʒi/", "meaning": "n. 类比", "example": "He drew an analogy between the brain and a computer."},
+                {"word": "ambiguous", "phonetic": "/æmˈbɪɡjuəs/", "meaning": "adj. 模棱两可的", "example": "The instructions were ambiguous.", "example_cn": "这些指示含糊不清。"},
+                {"word": "analogy", "phonetic": "/əˈnælədʒi/", "meaning": "n. 类比", "example": "He drew an analogy between the brain and a computer.", "example_cn": "他把大脑比作电脑。"},
             ]},
             "kaoyan": {"name": "考研英语词汇", "words": [
-                {"word": "advocate", "phonetic": "/ˈædvəkeɪt/", "meaning": "v. 提倡", "example": "She advocates taking a long-term view."},
-                {"word": "alleviate", "phonetic": "/əˈliːvieɪt/", "meaning": "v. 减轻", "example": "The medicine alleviated the pain."},
+                {"word": "advocate", "phonetic": "/ˈædvəkeɪt/", "meaning": "v. 提倡", "example": "She advocates taking a long-term view.", "example_cn": "她主张从长计议。"},
+                {"word": "alleviate", "phonetic": "/əˈliːvieɪt/", "meaning": "v. 减轻", "example": "The medicine alleviated the pain.", "example_cn": "这种药减轻了疼痛。"},
             ]},
             "ielts": {"name": "雅思核心词汇", "words": [
-                {"word": "contemporary", "phonetic": "/kənˈtempəreri/", "meaning": "adj. 当代的", "example": "Contemporary art is often controversial."},
+                {"word": "contemporary", "phonetic": "/kənˈtempəreri/", "meaning": "adj. 当代的", "example": "Contemporary art is often controversial.", "example_cn": "当代艺术常常引发争议。"},
             ]},
             "toefl": {"name": "托福核心词汇", "words": [
-                {"word": "substantial", "phonetic": "/səbˈstænʃl/", "meaning": "adj. 大量的", "example": "The project requires substantial funding."},
+                {"word": "substantial", "phonetic": "/səbˈstænʃl/", "meaning": "adj. 大量的", "example": "The project requires substantial funding.", "example_cn": "这个项目需要大量资金。"},
             ]},
             "gre": {"name": "GRE词汇", "words": [
-                {"word": "abate", "phonetic": "/əˈbeɪt/", "meaning": "v. 减弱", "example": "The storm began to abate."},
+                {"word": "abate", "phonetic": "/əˈbeɪt/", "meaning": "v. 减弱", "example": "The storm began to abate.", "example_cn": "暴风雨开始减弱。"},
             ]},
             "business": {"name": "商务英语", "words": [
-                {"word": "deadline", "phonetic": "/ˈdedlaɪn/", "meaning": "n. 截止日期", "example": "We must meet the deadline."},
+                {"word": "deadline", "phonetic": "/ˈdedlaɪn/", "meaning": "n. 截止日期", "example": "We must meet the deadline.", "example_cn": "我们必须赶上截止日期。"},
             ]},
         }
     },
     "japanese": {
         "name": "日语", "flag": "🇯🇵",
         "books": {
-            "n1": {"name": "JLPT N1", "words": [{"word": "意向", "phonetic": "いこう", "meaning": "意向，打算", "example": "彼の意向を確認した。"}]},
-            "n4": {"name": "JLPT N4", "words": [{"word": "約束", "phonetic": "やくそく", "meaning": "约定", "example": "約束を守ってください。"}]},
-            "n5": {"name": "JLPT N5", "words": [{"word": "学生", "phonetic": "がくせい", "meaning": "学生", "example": "私は大学生です。"}]},
+            "n1": {"name": "JLPT N1", "words": [{"word": "意向", "phonetic": "いこう", "meaning": "意向，打算", "example": "彼の意向を確認した。", "example_cn": "确认了他的意向。"}]},
+            "n4": {"name": "JLPT N4", "words": [{"word": "約束", "phonetic": "やくそく", "meaning": "约定", "example": "約束を守ってください。", "example_cn": "请遵守约定。"}]},
+            "n5": {"name": "JLPT N5", "words": [{"word": "学生", "phonetic": "がくせい", "meaning": "学生", "example": "私は大学生です。", "example_cn": "我是大学生。"}]},
         }
     },
     "french": {
         "name": "法语", "flag": "🇫🇷",
         "books": {
-            "tef": {"name": "TEF/TCF核心词", "words": [{"word": "bonjour", "phonetic": "/bɔ̃ʒuʁ/", "meaning": "你好", "example": "Bonjour, comment allez-vous?"}]},
-            "basic_fr": {"name": "法语入门", "words": [{"word": "amour", "phonetic": "/amuʁ/", "meaning": "爱", "example": "L'amour est aveugle."}]},
+            "tef": {"name": "TEF/TCF核心词", "words": [{"word": "bonjour", "phonetic": "/bɔ̃ʒuʁ/", "meaning": "你好", "example": "Bonjour, comment allez-vous?", "example_cn": "你好，你好吗？"}]},
+            "basic_fr": {"name": "法语入门", "words": [{"word": "amour", "phonetic": "/amuʁ/", "meaning": "爱", "example": "L'amour est aveugle.", "example_cn": "爱情是盲目的。"}]},
         }
     },
     "russian": {
         "name": "俄语", "flag": "🇷🇺",
         "books": {
-            "basic_ru": {"name": "俄语入门", "words": [{"word": "привет", "phonetic": "privet", "meaning": "你好", "example": "Привет, как дела?"}]},
+            "basic_ru": {"name": "俄语入门", "words": [{"word": "привет", "phonetic": "privet", "meaning": "你好", "example": "Привет, как дела?", "example_cn": "你好，最近怎么样？"}]},
         }
     },
     "korean": {
         "name": "韩语", "flag": "🇰🇷",
         "books": {
-            "topik1": {"name": "TOPIK I", "words": [{"word": "안녕하세요", "phonetic": "annyeonghaseyo", "meaning": "你好", "example": "안녕하세요, 만나서 반갑습니다."}]},
+            "topik1": {"name": "TOPIK I", "words": [{"word": "안녕하세요", "phonetic": "annyeonghaseyo", "meaning": "你好", "example": "안녕하세요, 만나서 반갑습니다.", "example_cn": "你好，很高兴见到你。"}]},
         }
     },
     "german": {
         "name": "德语", "flag": "🇩🇪",
         "books": {
-            "testdaf": {"name": "德福核心词", "words": [{"word": "Danke", "phonetic": "/ˈdaŋkə/", "meaning": "谢谢", "example": "Danke schön!"}]},
+            "testdaf": {"name": "德福核心词", "words": [{"word": "Danke", "phonetic": "/ˈdaŋkə/", "meaning": "谢谢", "example": "Danke schön!", "example_cn": "非常感谢！"}]},
         }
     },
     "italian": {
         "name": "意大利语", "flag": "🇮🇹",
         "books": {
-            "basic_it": {"name": "意大利语入门", "words": [{"word": "ciao", "phonetic": "/ˈtʃaːo/", "meaning": "你好/再见", "example": "Ciao, come stai?"}]},
+            "basic_it": {"name": "意大利语入门", "words": [{"word": "ciao", "phonetic": "/ˈtʃaːo/", "meaning": "你好/再见", "example": "Ciao, come stai?", "example_cn": "你好，你怎么样？"}]},
         }
     },
     "spanish": {
         "name": "西班牙语", "flag": "🇪🇸",
         "books": {
-            "dele": {"name": "DELE核心词", "words": [{"word": "hola", "phonetic": "/ˈola/", "meaning": "你好", "example": "¡Hola! ¿Cómo estás?"}]},
+            "dele": {"name": "DELE核心词", "words": [{"word": "hola", "phonetic": "/ˈola/", "meaning": "你好", "example": "¡Hola! ¿Cómo estás?", "example_cn": "你好！你好吗？"}]},
         }
     },
     "cantonese": {
         "name": "粤语", "flag": "🇭🇰",
         "books": {
-            "basic_yue": {"name": "粤语入门", "words": [{"word": "你好", "phonetic": "nei5 hou2", "meaning": "你好", "example": "你好，我係陳先生。"}]},
+            "basic_yue": {"name": "粤语入门", "words": [{"word": "你好", "phonetic": "nei5 hou2", "meaning": "你好", "example": "你好，我係陳先生。", "example_cn": "你好，我是陈先生。"}]},
         }
     },
     "portuguese": {
         "name": "葡萄牙语", "flag": "🇵🇹",
         "books": {
-            "basic_pt": {"name": "葡萄牙语入门", "words": [{"word": "olá", "phonetic": "/oˈla/", "meaning": "你好", "example": "Olá, como estás?"}]},
+            "basic_pt": {"name": "葡萄牙语入门", "words": [{"word": "olá", "phonetic": "/oˈla/", "meaning": "你好", "example": "Olá, como estás?", "example_cn": "你好，你好吗？"}]},
         }
     },
     "chinese": {
         "name": "中文", "flag": "🇨🇳",
         "books": {
-            "chengyu": {"name": "成语词典", "words": [{"word": "画龙点睛", "phonetic": "huà lóng diǎn jīng", "meaning": "比喻在关键处点明实质", "example": "这篇文章结尾真是画龙点睛。"}]},
-            "gushi": {"name": "古诗词名句", "words": [{"word": "海内存知己", "phonetic": "hǎi nèi cún zhī jǐ", "meaning": "四海之内有知心朋友", "example": "海内存知己，天涯若比邻。"}]},
+            "chengyu": {"name": "成语词典", "words": [{"word": "画龙点睛", "phonetic": "huà lóng diǎn jīng", "meaning": "比喻在关键处点明实质", "example": "这篇文章结尾真是画龙点睛。", "example_cn": ""}]},
+            "gushi": {"name": "古诗词名句", "words": [{"word": "海内存知己", "phonetic": "hǎi nèi cún zhī jǐ", "meaning": "四海之内有知心朋友", "example": "海内存知己，天涯若比邻。", "example_cn": ""}]},
         }
     },
 }
@@ -293,10 +297,13 @@ textarea { min-height:80px; resize:vertical; font-family:inherit; }
         <h2>通用设置</h2>
         <label>Kindle 型号</label>
         <select name="model">
-            <option value="pw4">Paperwhite 4+ (758×1024)</option>
-            <option value="pw3">Paperwhite 1-3 (758×1024)</option>
-            <option value="basic">Kindle 基础版 (600×800)</option>
-            <option value="oasis">Oasis / Scribe (1264×1680)</option>
+            <option value="pw4" selected>Paperwhite 第10代 (758×1024)</option>
+            <option value="pw5">Paperwhite 第11代 (1236×1648)</option>
+            <option value="pw3">Paperwhite 第7代及以前 (758×1024)</option>
+            <option value="basic11">Kindle 基础版 第11代 (758×1024)</option>
+            <option value="basic">Kindle 基础版 第10代及以前 (600×800)</option>
+            <option value="oasis">Oasis 第9/10代 (1264×1680)</option>
+            <option value="scribe">Scribe (1860×2480)</option>
         </select>
     </div>
 
@@ -399,8 +406,8 @@ textarea { min-height:80px; resize:vertical; font-family:inherit; }
         <label>显示内容</label>
         <div class="checkbox-row"><input type="checkbox" name="show_phonetic" checked> <span>音标/发音</span></div>
         <div class="checkbox-row"><input type="checkbox" name="show_meaning" checked> <span>释义</span></div>
-        <div class="checkbox-row"><input type="checkbox" name="show_example" checked> <span>例句</span></div>
         <div class="checkbox-row"><input type="checkbox" name="show_progress" checked> <span>进度</span></div>
+        <p class="hint">例句和中文翻译始终显示</p>
         """ + build_refresh_select("300") + """
     </div>
     {% endif %}
@@ -421,6 +428,7 @@ textarea { min-height:80px; resize:vertical; font-family:inherit; }
 """
 
 # ==================== Kindle 展示模板 ====================
+# vh = 可视区域高度（屏幕高 - 浏览器工具栏），用于垂直居中
 
 TMPL_INFO = """
 <!DOCTYPE html>
@@ -429,8 +437,7 @@ TMPL_INFO = """
 <title>Kindle Info</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-html { height:100%; }
-body { width:{{ w }}px; height:100%; background:#fff; color:#000;
+body { width:{{ w }}px; height:{{ vh }}px; background:#fff; color:#000;
     font-family:"Georgia","Times New Roman",serif; overflow:hidden; position:relative; }
 .vc { display:table; width:100%; height:100%; }
 .vc-cell { display:table-cell; vertical-align:middle; text-align:center; }
@@ -467,8 +474,7 @@ TMPL_BOARD = """
 <title>Kindle Board</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-html { height:100%; }
-body { width:{{ w }}px; height:100%; background:#fff; color:#000;
+body { width:{{ w }}px; height:{{ vh }}px; background:#fff; color:#000;
     font-family:"Georgia","Times New Roman",serif; padding:{{ pad }}px; overflow:hidden; position:relative; }
 h1 { font-size:{{ t_title }}px; margin-bottom:16px; border-bottom:2px solid #000; padding-bottom:8px; }
 .section { margin-bottom:20px; }
@@ -514,11 +520,10 @@ TMPL_FRAME = """
 <title>Kindle Frame</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-html { height:100%; }
-body { width:{{ w }}px; height:100%; background:#000; overflow:hidden; position:relative; }
+body { width:{{ w }}px; height:{{ vh }}px; background:#000; overflow:hidden; position:relative; }
 .vc { display:table; width:100%; height:100%; }
 .vc-cell { display:table-cell; vertical-align:middle; text-align:center; }
-img { max-width:100%; max-height:{{ h }}px; filter:contrast(1.2); }
+img { max-width:100%; max-height:{{ vh }}px; filter:contrast(1.2); }
 .counter { position:absolute; bottom:20px; right:20px; font-size:14px; color:#fff;
     background:rgba(0,0,0,0.5); padding:4px 10px; border-radius:10px; font-family:Arial; }
 {% if interval == 0 %}.static-badge { position:absolute; top:20px; left:20px; font-size:12px; color:#fff; background:rgba(0,0,0,0.5); padding:3px 8px; border-radius:8px; }{% endif %}
@@ -537,8 +542,7 @@ TMPL_READING = """
 <title>Kindle Reading</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-html { height:100%; }
-body { width:{{ w }}px; height:100%; background:#fff; color:#000;
+body { width:{{ w }}px; height:{{ vh }}px; background:#fff; color:#000;
     font-family:"Georgia","Times New Roman",serif; padding:{{ pad }}px; overflow:hidden; position:relative; }
 h1 { font-size:{{ t_title }}px; margin-bottom:20px; border-bottom:2px solid #000; padding-bottom:8px; }
 .book { margin-bottom:18px; }
@@ -570,8 +574,7 @@ TMPL_POMO = """
 <title>Kindle Pomodoro</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-html { height:100%; }
-body { width:{{ w }}px; height:100%; background:#fff; color:#000;
+body { width:{{ w }}px; height:{{ vh }}px; background:#fff; color:#000;
     font-family:"Georgia","Times New Roman",serif; overflow:hidden; position:relative; }
 .vc { display:table; width:100%; height:100%; }
 .vc-cell { display:table-cell; vertical-align:middle; text-align:center; }
@@ -604,8 +607,7 @@ TMPL_WORDS = """
 <title>Kindle Word</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-html { height:100%; }
-body { width:{{ w }}px; height:100%; background:#fff; color:#000;
+body { width:{{ w }}px; height:{{ vh }}px; background:#fff; color:#000;
     font-family:"Georgia","Times New Roman",serif; overflow:hidden; position:relative; }
 .vc { display:table; width:100%; height:100%; }
 .vc-cell { display:table-cell; vertical-align:middle; text-align:center; padding:0 {{ pad }}px; }
@@ -615,7 +617,8 @@ body { width:{{ w }}px; height:100%; background:#fff; color:#000;
 .phonetic { font-size:{{ t_sub }}px; color:#333; margin-bottom:18px; font-family:Arial; }
 .divider { width:50px; height:2px; background:#000; margin:14px auto; }
 .meaning { font-size:{{ t_body }}px; margin:0 auto 14px; text-align:center; line-height:1.5; }
-.example { font-size:{{ t_small2 }}px; color:#333; font-style:italic; text-align:center; line-height:1.5; margin:0 auto; max-width:85%; }
+.example { font-size:{{ t_small2 }}px; color:#333; font-style:italic; text-align:center; line-height:1.5; margin:0 auto 6px; max-width:85%; }
+.example-cn { font-size:{{ t_small }}px; color:#555; text-align:center; line-height:1.5; margin:0 auto; max-width:85%; }
 .progress { position:absolute; bottom:{{ pad_s }}px; left:0; right:0; text-align:center; font-size:{{ t_small }}px; color:#555; font-family:Arial; }
 .footer-line { position:absolute; bottom:{{ pad_s }}px; left:{{ pad_s }}px; font-size:{{ t_small }}px; color:#999; }
 {% if interval == 0 %}.static-badge { position:absolute; top:{{ pad_s }}px; right:{{ pad_s }}px; font-size:{{ t_small }}px; color:#999; border:1px solid #ccc; padding:3px 8px; border-radius:8px; }{% endif %}
@@ -629,7 +632,8 @@ body { width:{{ w }}px; height:100%; background:#fff; color:#000;
 {% if show_phonetic %}<div class="phonetic">{{ phonetic }}</div>{% endif %}
 <div class="divider"></div>
 {% if show_meaning %}<div class="meaning">{{ meaning }}</div>{% endif %}
-{% if show_example %}<div class="example">{{ example }}</div>{% endif %}
+{% if example %}<div class="example">{{ example }}</div>{% endif %}
+{% if example_cn %}<div class="example-cn">{{ example_cn }}</div>{% endif %}
 </div></div>
 {% if show_progress %}<div class="progress">{{ current }} / {{ total }}</div>{% endif %}
 <div class="footer-line">Kindle Word</div>
@@ -756,7 +760,6 @@ def generate():
             "lang_flag": WORD_BANK.get(lang, {}).get("flag", "🇺🇸"),
             "show_phonetic": "show_phonetic" in request.form,
             "show_meaning": "show_meaning" in request.form,
-            "show_example": "show_example" in request.form,
             "show_progress": "show_progress" in request.form,
         })
 
@@ -846,7 +849,15 @@ def render_display(cfg_id):
     mode = cfg["mode"]
     m = MODELS.get(cfg.get("model", "pw4"), MODELS["pw4"])
     w, h = m["w"], m["h"]
-    pad = 48 if m["w"] == 758 else (36 if m["w"] == 600 else 64)
+    vh = h - m.get("chrome", 90)  # 可视区域高度 = 屏幕高 - 浏览器工具栏
+    if m["w"] <= 600:
+        pad = 36
+    elif m["w"] <= 758:
+        pad = 48
+    elif m["w"] <= 1264:
+        pad = 64
+    else:
+        pad = 96
     interval = cfg.get("interval", 300)
 
     if mode == "info":
@@ -859,7 +870,7 @@ def render_display(cfg_id):
         weather = get_weather(city_key)
         return render_template_string(TMPL_INFO,
             interval=interval,
-            w=w, h=h, pad=pad,
+            w=w, h=h, vh=vh, pad=pad,
             t_time=int(h*0.12), t_date=int(h*0.045), t_body=int(h*0.035), t_small=int(h*0.022),
             time=now.strftime("%H:%M"),
             date=now.strftime("%Y年%m月%d日 %a"),
@@ -870,7 +881,7 @@ def render_display(cfg_id):
     elif mode == "board":
         return render_template_string(TMPL_BOARD,
             interval=interval,
-            w=w, h=h, pad=pad,
+            w=w, h=h, vh=vh, pad=pad,
             t_title=int(h*0.05), t_sub=int(h*0.032), t_body=int(h*0.026), t_small=int(h*0.02),
             todos=cfg.get("todos", []),
             events=cfg.get("events", []),
@@ -886,7 +897,7 @@ def render_display(cfg_id):
         next_url = f"{request.host_url}show?id={cfg_id}&idx={next_idx}"
         return render_template_string(TMPL_FRAME,
             interval=interval,
-            w=w, h=h,
+            w=w, h=h, vh=vh,
             img_url=img_url,
             next_url=next_url,
             cur=idx+1, total=len(photos))
@@ -894,7 +905,7 @@ def render_display(cfg_id):
     elif mode == "reading":
         return render_template_string(TMPL_READING,
             interval=interval,
-            w=w, h=h, pad=pad,
+            w=w, h=h, vh=vh, pad=pad,
             t_title=int(h*0.05), t_sub=int(h*0.032), t_body=int(h*0.026), t_small=int(h*0.02),
             books=cfg.get("books", []))
 
@@ -917,7 +928,7 @@ def render_display(cfg_id):
 
         return render_template_string(TMPL_POMO,
             interval=interval,
-            w=w, h=h, pad=pad,
+            w=w, h=h, vh=vh, pad=pad,
             t_time=int(h*0.14), t_sub=int(h*0.04), t_body=int(h*0.03), t_small=int(h*0.022),
             task=cfg.get("task_name", "专注中"),
             time_left=time_left,
@@ -932,17 +943,17 @@ def render_display(cfg_id):
         wdata = words[idx]
         return render_template_string(TMPL_WORDS,
             interval=interval,
-            w=w, h=h, pad=pad, pad_s=int(pad*0.5),
+            w=w, h=h, vh=vh, pad=pad, pad_s=int(pad*0.5),
             t_word=int(h*0.09), t_sub=int(h*0.035), t_body=int(h*0.03), t_small=int(h*0.022), t_small2=int(h*0.025),
             word=wdata["word"],
             phonetic=wdata.get("phonetic", ""),
             meaning=wdata.get("meaning", ""),
             example=wdata.get("example", ""),
+            example_cn=wdata.get("example_cn", ""),
             book_name=cfg.get("book_name", ""),
             lang_flag=cfg.get("lang_flag", "🇺🇸"),
             show_phonetic=cfg.get("show_phonetic", True),
             show_meaning=cfg.get("show_meaning", True),
-            show_example=cfg.get("show_example", True),
             show_progress=cfg.get("show_progress", True),
             current=idx+1,
             total=cfg.get("total", 1))
