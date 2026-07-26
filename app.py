@@ -5,6 +5,7 @@ import random
 import requests
 import base64
 import io
+import zlib
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from PIL import Image, ImageEnhance
@@ -18,7 +19,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB 上传限制
 
-# 内存配置存储（Render 免费版重启会清空，但展示用途重新配置即可）
+# 内存配置存储（Render 免费版重启会清空；永久链接 /p/ 不依赖此处）
 USER_CONFIGS = {}
 
 # ==================== Kindle 分辨率规格 ====================
@@ -225,6 +226,93 @@ def build_refresh_select(default_value="300"):
     </select>
     <p class="hint">「不自动刷新」适合固定展示，Kindle 按刷新键手动更新</p>
     """
+
+# ==================== 看板/阅读 数据计算（生成与永久链接渲染共用） ====================
+def compute_events(events_raw):
+    events = []
+    for er in events_raw:
+        if "|" in er:
+            name, date_str = er.split("|", 1)
+            try:
+                target = datetime.strptime(date_str.strip(), "%Y-%m-%d")
+                today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+                delta = (target - today).days
+                if delta < 0:
+                    events.append({"name": name.strip(), "days": "已过去"})
+                elif delta == 0:
+                    events.append({"name": name.strip(), "days": "就是今天！"})
+                else:
+                    events.append({"name": name.strip(), "days": f"还有 {delta} 天"})
+            except Exception:
+                events.append({"name": name.strip(), "days": "日期格式错误"})
+    return events
+
+def compute_habits(habits):
+    habits_out = []
+    for i, h in enumerate(habits):
+        pct = ((i * 37 + datetime.now().day * 13) % 100)
+        habits_out.append({"name": h, "pct": pct})
+    return habits_out
+
+def compute_books(books_raw):
+    books = []
+    for br in books_raw:
+        if "|" in br:
+            parts = br.split("|")
+            if len(parts) >= 3:
+                try:
+                    cur, tot = int(parts[1].strip()), int(parts[2].strip())
+                    pct = min(100, max(0, int(cur / tot * 100)))
+                    books.append({"name": parts[0].strip(), "current": cur, "total": tot, "pct": pct})
+                except Exception:
+                    pass
+    return books
+
+# ==================== 永久链接（配置压缩编码进 URL，重启不过期） ====================
+def encode_cfg(tc):
+    raw = json.dumps(tc, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    return base64.urlsafe_b64encode(zlib.compress(raw, 9)).decode("ascii").rstrip("=")
+
+def decode_cfg(token):
+    pad = "=" * (-len(token) % 4)
+    raw = zlib.decompress(base64.urlsafe_b64decode(token + pad))
+    return json.loads(raw.decode("utf-8"))
+
+def expand_token_cfg(tc):
+    """把 URL 里的紧凑配置还原成渲染用的完整配置"""
+    m = tc.get("m")
+    if m not in ("info", "board", "reading", "pomodoro", "words"):
+        raise ValueError("unknown mode")
+    cfg = {"mode": m, "model": tc.get("md", "pw4"), "interval": int(tc.get("i", 300))}
+    if m == "info":
+        cfg["city"] = tc.get("c", "beijing")
+    elif m == "board":
+        cfg["todos"] = tc.get("t", [])
+        cfg["events"] = compute_events(tc.get("e", []))
+        cfg["habits"] = compute_habits(tc.get("hb", []))
+    elif m == "reading":
+        cfg["books"] = compute_books(tc.get("bk", []))
+    elif m == "pomodoro":
+        cfg["duration"] = int(tc.get("d", 25))
+        cfg["task_name"] = tc.get("t", "专注中") or "专注中"
+        cfg["start_time"] = tc.get("s") or datetime.now().isoformat()
+    elif m == "words":
+        lang = tc.get("l", "english")
+        book = tc.get("b", "cet4")
+        book_info = WORD_BANK.get(lang, {}).get("books", {}).get(book, {})
+        words = book_info.get("words", [])
+        cfg.update({
+            "language": lang,
+            "book": book,
+            "words": words,
+            "total": len(words),
+            "book_name": book_info.get("name", ""),
+            "lang_flag": WORD_BANK.get(lang, {}).get("flag", "🇺🇸"),
+            "show_phonetic": bool(tc.get("sp", 1)),
+            "show_meaning": bool(tc.get("sm", 1)),
+            "show_progress": bool(tc.get("sg", 1)),
+        })
+    return cfg
 
 # ==================== 配置页面（纯链接切换，零 JavaScript，兼容 Kindle 老浏览器） ====================
 MODE_DEFS = [
@@ -676,35 +764,24 @@ def generate():
         "w": model["w"],
         "h": model["h"],
     }
+    # 永久链接用的紧凑配置（编码进 URL，不依赖服务器内存）
+    token_cfg = {"m": mode, "md": model_key, "i": interval}
 
     if mode == "info":
-        base_cfg.update({"city": request.form.get("city", "beijing")})
+        city = request.form.get("city", "beijing")
+        base_cfg.update({"city": city})
+        token_cfg.update({"c": city})
 
     elif mode == "board":
         todos = [t.strip() for t in request.form.get("todos", "").split("\n") if t.strip()]
         events_raw = [e.strip() for e in request.form.get("events", "").split("\n") if e.strip()]
         habits = [h.strip() for h in request.form.get("habits", "").split("\n") if h.strip()]
-        events = []
-        for er in events_raw:
-            if "|" in er:
-                name, date_str = er.split("|", 1)
-                try:
-                    target = datetime.strptime(date_str.strip(), "%Y-%m-%d")
-                    today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-                    delta = (target - today).days
-                    if delta < 0:
-                        events.append({"name": name.strip(), "days": "已过去"})
-                    elif delta == 0:
-                        events.append({"name": name.strip(), "days": "就是今天！"})
-                    else:
-                        events.append({"name": name.strip(), "days": f"还有 {delta} 天"})
-                except Exception:
-                    events.append({"name": name.strip(), "days": "日期格式错误"})
-        habits_out = []
-        for i, h in enumerate(habits):
-            pct = ((i * 37 + datetime.now().day * 13) % 100)
-            habits_out.append({"name": h, "pct": pct})
-        base_cfg.update({"todos": todos, "events": events, "habits": habits_out})
+        base_cfg.update({
+            "todos": todos,
+            "events": compute_events(events_raw),
+            "habits": compute_habits(habits),
+        })
+        token_cfg.update({"t": todos, "e": events_raw, "hb": habits})
 
     elif mode == "frame":
         files = request.files.getlist("photos")
@@ -726,26 +803,19 @@ def generate():
 
     elif mode == "reading":
         books_raw = [b.strip() for b in request.form.get("books", "").split("\n") if b.strip()]
-        books = []
-        for br in books_raw:
-            if "|" in br:
-                parts = br.split("|")
-                if len(parts) >= 3:
-                    try:
-                        cur, tot = int(parts[1].strip()), int(parts[2].strip())
-                        pct = min(100, max(0, int(cur / tot * 100)))
-                        books.append({"name": parts[0].strip(), "current": cur, "total": tot, "pct": pct})
-                    except Exception:
-                        pass
-        base_cfg.update({"books": books})
+        base_cfg.update({"books": compute_books(books_raw)})
+        token_cfg.update({"bk": books_raw})
 
     elif mode == "pomodoro":
         duration = int(request.form.get("duration", 25))
+        task_name = request.form.get("task_name", "专注中") or "专注中"
+        start_time = datetime.now().isoformat()
         base_cfg.update({
             "duration": duration,
-            "task_name": request.form.get("task_name", "专注中") or "专注中",
-            "start_time": datetime.now().isoformat(),
+            "task_name": task_name,
+            "start_time": start_time,
         })
+        token_cfg.update({"d": duration, "t": task_name, "s": start_time})
 
     elif mode == "words":
         lang = request.form.get("language", "english")
@@ -762,26 +832,28 @@ def generate():
             "show_meaning": "show_meaning" in request.form,
             "show_progress": "show_progress" in request.form,
         })
+        token_cfg.update({
+            "l": lang, "b": book,
+            "sp": 1 if "show_phonetic" in request.form else 0,
+            "sm": 1 if "show_meaning" in request.form else 0,
+            "sg": 1 if "show_progress" in request.form else 0,
+        })
 
     USER_CONFIGS[cfg_id] = base_cfg
 
     show_url = f"{request.host_url}s/{cfg_id}"
 
-    # 尝试生成 is.gd 超短链接（Kindle 手打更方便），失败则用本站短路径
-    short_url = None
-    try:
-        r = requests.get("https://is.gd/create.php",
-                         params={"format": "simple", "url": show_url}, timeout=4)
-        if r.status_code == 200 and r.text.strip().startswith("http"):
-            short_url = r.text.strip()
-    except Exception:
-        short_url = None
-
-    short_block = ""
-    if short_url:
-        short_block = f"""
-            <p class="short-label">🔗 短链接（推荐 Kindle 输入这个）：</p>
-            <div class="url-box short">{short_url}</div>"""
+    # 永久链接：配置编码进 URL，服务器重启/重新部署也不过期
+    # 相框模式除外（照片文件存在服务器磁盘，重启必然丢失）
+    perm_block = ""
+    if mode != "frame":
+        perm_url = f"{request.host_url}p/{encode_cfg(token_cfg)}"
+        perm_block = f"""
+            <p class="short-label">♾ 永久链接（重启也不过期，推荐 Kindle 输入这个并加书签）：</p>
+            <div class="url-box short">{perm_url}</div>"""
+    else:
+        perm_block = """
+            <p class="short-label" style="color:#b71c1c;">⚠ 相框照片存在服务器内存，服务重启后需重新上传生成</p>"""
 
     return f"""
     <!DOCTYPE html>
@@ -802,7 +874,7 @@ def generate():
             .success {{ color:#4caf50; font-weight:600; margin-bottom:8px; }}
             .badge {{ display:inline-block; background:#1a1a1a; color:#fff; padding:4px 10px; border-radius:8px; font-size:12px; margin-right:6px; }}
             .short-label {{ color:#2e7d32; font-size:14px; font-weight:600; margin-top:6px; }}
-            .url-box.short {{ font-size:20px; text-align:center; border:2px solid #4caf50; background:#e8f5e9; }}
+            .url-box.short {{ font-size:16px; text-align:center; border:2px solid #4caf50; background:#e8f5e9; }}
         </style>
     </head>
     <body>
@@ -814,8 +886,8 @@ def generate():
                 <span class="badge">{model['name']}</span>
                 <span class="badge">刷新: {interval if interval > 0 else '静态'}</span>
             </p>
-            {short_block}
-            <p class="short-label" style="color:#666; font-weight:400;">本站短链接：</p>
+            {perm_block}
+            <p class="short-label" style="color:#666; font-weight:400;">临时短链接（服务重启后失效）：</p>
             <div class="url-box">{show_url}</div>
             <a href="{show_url}" class="btn" target="_blank">点击预览效果</a>
             <div class="tip">
@@ -841,11 +913,24 @@ def show_short(cfg_id):
     return render_display(cfg_id)
 
 
+@app.route("/p/<token>")
+def show_perm(token):
+    try:
+        cfg = expand_token_cfg(decode_cfg(token))
+    except Exception:
+        return "链接无效或已损坏", 400
+    return render_cfg(cfg)
+
+
 def render_display(cfg_id):
     if not cfg_id or cfg_id not in USER_CONFIGS:
         return "配置不存在", 404
+    cfg = dict(USER_CONFIGS[cfg_id])
+    cfg["_cfg_id"] = cfg_id
+    return render_cfg(cfg)
 
-    cfg = USER_CONFIGS[cfg_id]
+
+def render_cfg(cfg):
     mode = cfg["mode"]
     m = MODELS.get(cfg.get("model", "pw4"), MODELS["pw4"])
     w, h = m["w"], m["h"]
@@ -894,7 +979,7 @@ def render_display(cfg_id):
         idx = int(request.args.get("idx", 0)) % len(photos)
         next_idx = (idx + 1) % len(photos)
         img_url = f"{request.host_url}uploads/{photos[idx]}"
-        next_url = f"{request.host_url}show?id={cfg_id}&idx={next_idx}"
+        next_url = f"{request.host_url}s/{cfg.get('_cfg_id', '')}?idx={next_idx}"
         return render_template_string(TMPL_FRAME,
             interval=interval,
             w=w, h=h, vh=vh,
