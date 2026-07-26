@@ -72,6 +72,8 @@ WORD_BANK = {
         "name": "日语", "flag": "🇯🇵",
         "books": {
             "n1": {"name": "JLPT N1", "words": [{"word": "意向", "phonetic": "いこう", "meaning": "意向，打算", "example": "彼の意向を確認した。", "example_cn": "确认了他的意向。"}]},
+            "n2": {"name": "JLPT N2", "words": [{"word": "曖昧", "phonetic": "あいまい", "meaning": "暧昧，含糊", "example": "曖昧な返事をするな。", "example_cn": "别给含糊的答复。"}]},
+            "n3": {"name": "JLPT N3", "words": [{"word": "余計", "phonetic": "よけい", "meaning": "多余", "example": "余計な心配をした。", "example_cn": "白担心了一场。"}]},
             "n4": {"name": "JLPT N4", "words": [{"word": "約束", "phonetic": "やくそく", "meaning": "约定", "example": "約束を守ってください。", "example_cn": "请遵守约定。"}]},
             "n5": {"name": "JLPT N5", "words": [{"word": "学生", "phonetic": "がくせい", "meaning": "学生", "example": "私は大学生です。", "example_cn": "我是大学生。"}]},
         }
@@ -135,13 +137,18 @@ WORD_BANK = {
 }
 
 # ==================== 远程扩充词库（启动时拉取，失败用内置词库兜底） ====================
-# 扩充词库来源：词条/音标/释义来自 ECDICT（MIT 开源词典），例句来自 tatoeba.org（CC-BY 2.0 FR）
+# 英语词条/音标/释义来自 ECDICT（MIT 开源词典）；各语种例句来自 tatoeba.org（CC-BY 2.0 FR），
+# 例句中文翻译 = Tatoeba 中文句对 + 人工补译。多个来源逐一拉取合并，单个失败不影响其它。
 REMOTE_BANK_URLS = [
     "https://raw.githubusercontent.com/serenashenn3-art/kindle-display-render/main/words_extra.b64",
-    "https://paste.rs/PydxG",
+    "https://paste.rs/PydxG",   # 英语 721 词（cet4/cet6/kaoyan/ielts/toefl/gre/business）
+    "https://paste.rs/I4hhZ",   # 日语 JLPT N5-N1 345 词
+    "https://paste.rs/49Blh",   # 法/西/德/意/俄 289 词
+    "https://paste.rs/TQrbu",   # 韩/葡/粤/中文 222 词
 ]
 
 def load_remote_bank():
+    total = 0
     for url in REMOTE_BANK_URLS:
         try:
             r = requests.get(url, timeout=12)
@@ -150,24 +157,25 @@ def load_remote_bank():
                 data = json.loads(zlib.decompress(base64.b64decode(raw)).decode("utf-8"))
             except Exception:
                 data = json.loads(raw.decode("utf-8"))
-            eng = (data or {}).get("english") or {}
             n = 0
-            for bk, pack in eng.items():
-                words = pack.get("words") if isinstance(pack, dict) else pack
-                if bk in WORD_BANK["english"]["books"] and words:
-                    WORD_BANK["english"]["books"][bk]["words"] = [
-                        {"word": w["w"], "phonetic": w.get("p", ""), "meaning": w.get("m", ""),
-                         "example": w.get("e", ""), "example_cn": w.get("c", "")}
-                        for w in words]
-                    if isinstance(pack, dict) and pack.get("name"):
-                        WORD_BANK["english"]["books"][bk]["name"] = pack["name"]
-                    n += len(words)
-            if n > 100:
-                print(f"[wordbank] loaded {n} words from {url}")
-                return True
+            for lang, lpack in (data or {}).items():
+                if lang == "meta" or lang not in WORD_BANK or not isinstance(lpack, dict):
+                    continue
+                for bk, pack in lpack.items():
+                    words = pack.get("words") if isinstance(pack, dict) else pack
+                    if bk in WORD_BANK[lang]["books"] and words:
+                        WORD_BANK[lang]["books"][bk]["words"] = [
+                            {"word": w["w"], "phonetic": w.get("p", ""), "meaning": w.get("m", ""),
+                             "example": w.get("e", ""), "example_cn": w.get("c", "")}
+                            for w in words]
+                        if isinstance(pack, dict) and pack.get("name"):
+                            WORD_BANK[lang]["books"][bk]["name"] = pack["name"]
+                        n += len(words)
+            total += n
+            print(f"[wordbank] loaded {n} words from {url}")
         except Exception as exc:
             print(f"[wordbank] fetch failed {url}: {exc}")
-    return False
+    return total > 100
 
 try:
     load_remote_bank()
