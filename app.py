@@ -6,6 +6,7 @@ import requests
 import base64
 import io
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from PIL import Image, ImageEnhance
 from flask import Flask, request, render_template_string, send_from_directory
 
@@ -140,6 +141,18 @@ CITY_COORDS = {
     "london": (51.5074, -0.1278), "paris": (48.8566, 2.3522),
 }
 
+CITY_TZ = {
+    "beijing": "Asia/Shanghai", "shanghai": "Asia/Shanghai",
+    "guangzhou": "Asia/Shanghai", "shenzhen": "Asia/Shanghai",
+    "chengdu": "Asia/Shanghai", "hangzhou": "Asia/Shanghai",
+    "wuhan": "Asia/Shanghai", "xian": "Asia/Shanghai",
+    "nanjing": "Asia/Shanghai", "chongqing": "Asia/Shanghai",
+    "tianjin": "Asia/Shanghai", "suzhou": "Asia/Shanghai",
+    "tokyo": "Asia/Tokyo", "newyork": "America/New_York",
+    "london": "Europe/London", "paris": "Europe/Paris",
+}
+DEFAULT_TZ = "Asia/Shanghai"
+
 WEATHER_CODES = {
     0: "晴", 1: "多云", 2: "多云", 3: "阴",
     45: "雾", 48: "雾凇",
@@ -151,19 +164,34 @@ WEATHER_CODES = {
 }
 
 def get_weather(city_key):
+    if city_key not in CITY_COORDS:
+        return {"temp": "--", "weather": "未知", "city": city_key}
+    lat, lon = CITY_COORDS[city_key]
     try:
-        if city_key not in CITY_COORDS:
-            return {"temp": "--", "weather": "未知", "city": city_key}
-        lat, lon = CITY_COORDS[city_key]
-        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
+        url = (f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}"
+               f"&current=temperature_2m,weather_code")
         r = requests.get(url, timeout=5)
         data = r.json()
-        cw = data.get("current_weather", {})
-        code = cw.get("weathercode", 0)
-        temp = cw.get("temperature", 0)
-        return {"temp": f"{int(temp)}°C", "weather": WEATHER_CODES.get(code, "多云"), "city": city_key.capitalize()}
+        cur = data.get("current") or {}
+        if "temperature_2m" in cur:
+            temp = cur["temperature_2m"]
+            code = cur.get("weather_code", 0)
+            return {"temp": f"{int(temp)}°C", "weather": WEATHER_CODES.get(code, "多云"), "city": city_key.capitalize()}
+        raise ValueError("unexpected response shape")
     except Exception:
-        return {"temp": "22°C", "weather": "晴", "city": "Local"}
+        try:
+            url = (f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}"
+                   f"&current_weather=true")
+            r = requests.get(url, timeout=5)
+            data = r.json()
+            cw = data.get("current_weather") or {}
+            if "temperature" in cw:
+                temp = cw["temperature"]
+                code = cw.get("weathercode", 0)
+                return {"temp": f"{int(temp)}°C", "weather": WEATHER_CODES.get(code, "多云"), "city": city_key.capitalize()}
+        except Exception:
+            pass
+        return {"temp": "--°C", "weather": "获取失败", "city": city_key.capitalize()}
 
 
 # ==================== 刷新策略选择器（各模式默认不同） ====================
@@ -787,8 +815,13 @@ def show():
     interval = cfg.get("interval", 300)
 
     if mode == "info":
-        now = datetime.now()
-        weather = get_weather(cfg.get("city", "beijing"))
+        city_key = cfg.get("city", "beijing")
+        try:
+            tz = ZoneInfo(CITY_TZ.get(city_key, DEFAULT_TZ))
+        except Exception:
+            tz = None
+        now = datetime.now(tz) if tz else datetime.now()
+        weather = get_weather(city_key)
         return render_template_string(TMPL_INFO,
             interval=interval,
             w=w, h=h, pad=pad,
