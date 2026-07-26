@@ -449,21 +449,23 @@ TMPL_INFO = """
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
-    font-family:"Georgia","Times New Roman",serif; display:flex; flex-direction:column;
-    justify-content:center; align-items:center; overflow:hidden; position:relative; }
+    font-family:"Georgia","Times New Roman",serif; overflow:hidden; position:relative; }
+.vc { display:table; width:100%; height:100%; }
+.vc-cell { display:table-cell; vertical-align:middle; text-align:center; }
 .time { font-size:{{ t_time }}px; font-weight:bold; margin-bottom:10px; letter-spacing:2px; }
 .date { font-size:{{ t_date }}px; color:#333; margin-bottom:30px; }
-.divider { width:60px; height:2px; background:#000; margin:20px 0; }
-.weather-row { display:flex; align-items:center; gap:20px; font-size:{{ t_body }}px; }
-.weather-item { text-align:center; }
+.divider { width:60px; height:2px; background:#000; margin:20px auto; }
+.weather-row { font-size:{{ t_body }}px; }
+.weather-item { display:inline-block; text-align:center; margin:0 18px; }
 .weather-label { font-size:{{ t_small }}px; color:#666; margin-bottom:4px; }
 .city { position:absolute; top:{{ pad }}px; right:{{ pad }}px; font-size:{{ t_small }}px; color:#777; border:1px solid #999; padding:4px 10px; border-radius:12px; }
-.footer { position:absolute; bottom:{{ pad }}px; font-size:{{ t_small }}px; color:#999; }
+.footer { position:absolute; bottom:{{ pad }}px; left:0; right:0; text-align:center; font-size:{{ t_small }}px; color:#999; }
 {% if interval == 0 %}.static-badge { position:absolute; top:{{ pad }}px; left:{{ pad }}px; font-size:{{ t_small }}px; color:#999; border:1px solid #ccc; padding:3px 8px; border-radius:8px; }{% endif %}
 </style></head>
 <body>
 {% if interval == 0 %}<div class="static-badge">静态模式</div>{% endif %}
 <div class="city">{{ city }}</div>
+<div class="vc"><div class="vc-cell">
 <div class="time">{{ time }}</div>
 <div class="date">{{ date }}</div>
 <div class="divider"></div>
@@ -471,6 +473,7 @@ body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
     <div class="weather-item"><div class="weather-label">天气</div><div>{{ weather }}</div></div>
     <div class="weather-item"><div class="weather-label">温度</div><div>{{ temp }}</div></div>
 </div>
+</div></div>
 <div class="footer">Kindle Info Panel</div>
 </body></html>
 """
@@ -528,16 +531,17 @@ TMPL_FRAME = """
 <title>Kindle Frame</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { width:{{ w }}px; height:{{ h }}px; background:#000; display:flex;
-    justify-content:center; align-items:center; overflow:hidden; position:relative; }
-img { max-width:100%; max-height:100%; object-fit:contain; filter:contrast(1.2); }
+body { width:{{ w }}px; height:{{ h }}px; background:#000; overflow:hidden; position:relative; }
+.vc { display:table; width:100%; height:100%; }
+.vc-cell { display:table-cell; vertical-align:middle; text-align:center; }
+img { max-width:100%; max-height:{{ h }}px; filter:contrast(1.2); }
 .counter { position:absolute; bottom:20px; right:20px; font-size:14px; color:#fff;
     background:rgba(0,0,0,0.5); padding:4px 10px; border-radius:10px; font-family:Arial; }
 {% if interval == 0 %}.static-badge { position:absolute; top:20px; left:20px; font-size:12px; color:#fff; background:rgba(0,0,0,0.5); padding:3px 8px; border-radius:8px; }{% endif %}
 </style></head>
 <body>
 {% if interval == 0 %}<div class="static-badge">静态模式</div>{% endif %}
-<img src="{{ img_url }}" alt="frame">
+<div class="vc"><div class="vc-cell"><img src="{{ img_url }}" alt="frame"></div></div>
 <div class="counter">{{ cur }} / {{ total }}</div>
 </body></html>
 """
@@ -582,24 +586,27 @@ TMPL_POMO = """
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
-    font-family:"Georgia","Times New Roman",serif; display:flex; flex-direction:column;
-    justify-content:center; align-items:center; overflow:hidden; position:relative; }
-.task { font-size:{{ t_sub }}px; color:#555; margin-bottom:20px; text-align:center; max-width:80%; }
+    font-family:"Georgia","Times New Roman",serif; overflow:hidden; position:relative; }
+.vc { display:table; width:100%; height:100%; }
+.vc-cell { display:table-cell; vertical-align:middle; text-align:center; }
+.task { font-size:{{ t_sub }}px; color:#555; margin:0 auto 20px; text-align:center; max-width:80%; }
 .time-left { font-size:{{ t_time }}px; font-weight:bold; margin-bottom:16px; letter-spacing:2px; }
-.progress-bg { width:70%; height:14px; background:#eee; border-radius:7px; overflow:hidden; margin-bottom:10px; }
+.progress-bg { width:70%; height:14px; background:#eee; border-radius:7px; overflow:hidden; margin:0 auto 10px; }
 .progress-fill { height:100%; background:#000; border-radius:7px; }
 .pct { font-size:{{ t_body }}px; color:#666; }
 .status { font-size:{{ t_sub }}px; margin-top:20px; font-weight:bold; }
-.footer { position:absolute; bottom:{{ pad }}px; font-size:{{ t_small }}px; color:#999; }
+.footer { position:absolute; bottom:{{ pad }}px; left:0; right:0; text-align:center; font-size:{{ t_small }}px; color:#999; }
 {% if interval == 0 %}.static-badge { position:absolute; top:{{ pad }}px; right:{{ pad }}px; font-size:{{ t_small }}px; color:#999; border:1px solid #ccc; padding:3px 8px; border-radius:8px; }{% endif %}
 </style></head>
 <body>
 {% if interval == 0 %}<div class="static-badge">静态模式</div>{% endif %}
+<div class="vc"><div class="vc-cell">
 <div class="task">{{ task }}</div>
 <div class="time-left">{{ time_left }}</div>
 <div class="progress-bg"><div class="progress-fill" style="width:{{ pct }}%"></div></div>
 <div class="pct">{{ pct }}%</div>
 <div class="status">{{ status }}</div>
+</div></div>
 <div class="footer">Kindle Pomodoro</div>
 </body></html>
 """
@@ -612,16 +619,17 @@ TMPL_WORDS = """
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
-    font-family:"Georgia","Times New Roman",serif; display:flex; flex-direction:column;
-    justify-content:center; align-items:center; padding:{{ pad }}px; overflow:hidden; position:relative; }
+    font-family:"Georgia","Times New Roman",serif; overflow:hidden; position:relative; }
+.vc { display:table; width:100%; height:100%; }
+.vc-cell { display:table-cell; vertical-align:middle; text-align:center; padding:0 {{ pad }}px; }
 .lang-tag { position:absolute; top:{{ pad_s }}px; right:{{ pad_s }}px; font-size:{{ t_small }}px; color:#555; border:1px solid #999; padding:3px 10px; border-radius:12px; font-family:Arial; }
 .book-tag { position:absolute; top:{{ pad_s }}px; left:{{ pad_s }}px; font-size:{{ t_small }}px; color:#777; font-family:Arial; }
 .word { font-size:{{ t_word }}px; font-weight:bold; margin-bottom:10px; text-align:center; line-height:1.2; }
 .phonetic { font-size:{{ t_sub }}px; color:#333; margin-bottom:18px; font-family:Arial; }
-.divider { width:50px; height:2px; background:#000; margin:14px 0; }
-.meaning { font-size:{{ t_body }}px; margin-bottom:14px; text-align:center; line-height:1.5; padding:0 20px; }
-.example { font-size:{{ t_small2 }}px; color:#333; font-style:italic; text-align:center; line-height:1.5; max-width:85%; }
-.progress { position:absolute; bottom:{{ pad_s }}px; font-size:{{ t_small }}px; color:#555; font-family:Arial; }
+.divider { width:50px; height:2px; background:#000; margin:14px auto; }
+.meaning { font-size:{{ t_body }}px; margin:0 auto 14px; text-align:center; line-height:1.5; }
+.example { font-size:{{ t_small2 }}px; color:#333; font-style:italic; text-align:center; line-height:1.5; margin:0 auto; max-width:85%; }
+.progress { position:absolute; bottom:{{ pad_s }}px; left:0; right:0; text-align:center; font-size:{{ t_small }}px; color:#555; font-family:Arial; }
 .footer-line { position:absolute; bottom:{{ pad_s }}px; left:{{ pad_s }}px; font-size:{{ t_small }}px; color:#999; }
 {% if interval == 0 %}.static-badge { position:absolute; top:{{ pad_s }}px; right:{{ pad_s }}px; font-size:{{ t_small }}px; color:#999; border:1px solid #ccc; padding:3px 8px; border-radius:8px; }{% endif %}
 </style></head>
@@ -629,11 +637,13 @@ body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
 {% if interval == 0 %}<div class="static-badge">静态模式</div>{% endif %}
 <div class="book-tag">{{ book_name }}</div>
 <div class="lang-tag">{{ lang_flag }}</div>
+<div class="vc"><div class="vc-cell">
 <div class="word">{{ word }}</div>
 {% if show_phonetic %}<div class="phonetic">{{ phonetic }}</div>{% endif %}
 <div class="divider"></div>
 {% if show_meaning %}<div class="meaning">{{ meaning }}</div>{% endif %}
 {% if show_example %}<div class="example">{{ example }}</div>{% endif %}
+</div></div>
 {% if show_progress %}<div class="progress">{{ current }} / {{ total }}</div>{% endif %}
 <div class="footer-line">Kindle Word</div>
 </body></html>
