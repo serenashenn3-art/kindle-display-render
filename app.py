@@ -655,7 +655,7 @@ def generate():
     mode = request.form.get("mode", "info")
     model_key = request.form.get("model", "pw4")
     model = MODELS.get(model_key, MODELS["pw4"])
-    cfg_id = str(uuid.uuid4())[:8]
+    cfg_id = str(uuid.uuid4())[:6]
 
     interval = int(request.form.get("interval", 300))
 
@@ -756,7 +756,24 @@ def generate():
 
     USER_CONFIGS[cfg_id] = base_cfg
 
-    show_url = f"{request.host_url}show?id={cfg_id}"
+    show_url = f"{request.host_url}s/{cfg_id}"
+
+    # 尝试生成 is.gd 超短链接（Kindle 手打更方便），失败则用本站短路径
+    short_url = None
+    try:
+        r = requests.get("https://is.gd/create.php",
+                         params={"format": "simple", "url": show_url}, timeout=4)
+        if r.status_code == 200 and r.text.strip().startswith("http"):
+            short_url = r.text.strip()
+    except Exception:
+        short_url = None
+
+    short_block = ""
+    if short_url:
+        short_block = f"""
+            <p class="short-label">🔗 短链接（推荐 Kindle 输入这个）：</p>
+            <div class="url-box short">{short_url}</div>"""
+
     return f"""
     <!DOCTYPE html>
     <html lang="zh-CN">
@@ -775,6 +792,8 @@ def generate():
             .tip code {{ background:#f0f0f0; padding:2px 6px; border-radius:4px; font-family:monospace; }}
             .success {{ color:#4caf50; font-weight:600; margin-bottom:8px; }}
             .badge {{ display:inline-block; background:#1a1a1a; color:#fff; padding:4px 10px; border-radius:8px; font-size:12px; margin-right:6px; }}
+            .short-label {{ color:#2e7d32; font-size:14px; font-weight:600; margin-top:6px; }}
+            .url-box.short {{ font-size:20px; text-align:center; border:2px solid #4caf50; background:#e8f5e9; }}
         </style>
     </head>
     <body>
@@ -786,6 +805,8 @@ def generate():
                 <span class="badge">{model['name']}</span>
                 <span class="badge">刷新: {interval if interval > 0 else '静态'}</span>
             </p>
+            {short_block}
+            <p class="short-label" style="color:#666; font-weight:400;">本站短链接：</p>
             <div class="url-box">{show_url}</div>
             <a href="{show_url}" class="btn" target="_blank">点击预览效果</a>
             <div class="tip">
@@ -803,7 +824,15 @@ def generate():
 
 @app.route("/show")
 def show():
-    cfg_id = request.args.get("id")
+    return render_display(request.args.get("id"))
+
+
+@app.route("/s/<cfg_id>")
+def show_short(cfg_id):
+    return render_display(cfg_id)
+
+
+def render_display(cfg_id):
     if not cfg_id or cfg_id not in USER_CONFIGS:
         return "配置不存在", 404
 
