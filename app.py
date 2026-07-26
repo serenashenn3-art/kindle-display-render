@@ -222,7 +222,16 @@ def build_refresh_select(default_value="300"):
     <p class="hint">「不自动刷新」适合固定展示，Kindle 按刷新键手动更新</p>
     """
 
-# ==================== 配置页面 HTML ====================
+# ==================== 配置页面（纯链接切换，零 JavaScript，兼容 Kindle 老浏览器） ====================
+MODE_DEFS = [
+    ("info", "📊", "信息面板"),
+    ("board", "📋", "个人看板"),
+    ("frame", "🖼", "电子相框"),
+    ("reading", "📚", "阅读进度"),
+    ("pomodoro", "🍅", "番茄钟"),
+    ("words", "🔤", "单词卡片"),
+]
+
 CONFIG_HTML = """
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -236,8 +245,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif
 .header { text-align:center; padding:24px 0 12px; }
 .header h1 { font-size:24px; margin-bottom:6px; }
 .header p { color:#666; font-size:14px; }
-.mode-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:16px 0; }
-.mode-card { background:#fff; border:2px solid #e5e5e5; border-radius:14px; padding:16px 8px; text-align:center; cursor:pointer; transition:all .2s; }
+.mode-grid { margin:16px 0; }
+.mode-card { display:inline-block; width:31%; margin:0 1% 10px 0; vertical-align:top; background:#fff; border:2px solid #e5e5e5; border-radius:14px; padding:16px 8px; text-align:center; text-decoration:none; color:#1a1a1a; }
 .mode-card:hover { border-color:#999; }
 .mode-card.active { border-color:#1a1a1a; background:#1a1a1a; color:#fff; }
 .mode-card .icon { font-size:28px; margin-bottom:6px; display:block; }
@@ -250,18 +259,15 @@ input[type="text"], input[type="number"], input[type="date"], textarea, select {
 }
 textarea { min-height:80px; resize:vertical; font-family:inherit; }
 .hint { font-size:12px; color:#999; margin-top:-8px; margin-bottom:12px; }
-.row { display:flex; gap:10px; }
-.row > * { flex:1; }
 .btn { width:100%; padding:16px; background:#1a1a1a; color:#fff; border:none; border-radius:14px; font-size:16px; font-weight:600; cursor:pointer; margin-top:8px; }
-.result { display:none; background:#e8f5e9; border:1.5px solid #4caf50; border-radius:14px; padding:20px; margin-top:16px; }
-.result h3 { color:#2e7d32; font-size:15px; margin-bottom:10px; }
-.url-box { background:#fff; padding:12px; border-radius:10px; font-family:monospace; font-size:13px; word-break:break-all; border:1px dashed #4caf50; }
 .tip { font-size:13px; color:#666; margin-top:16px; line-height:1.7; background:#fff; padding:16px; border-radius:14px; }
 .tip code { background:#f0f0f0; padding:2px 6px; border-radius:4px; font-family:monospace; }
-.hidden { display:none !important; }
-.checkbox-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-.checkbox-row input { width:20px; height:20px; accent-color:#1a1a1a; }
+.checkbox-row { margin-bottom:10px; }
+.checkbox-row input { width:20px; height:20px; accent-color:#1a1a1a; vertical-align:middle; }
+.checkbox-row span { vertical-align:middle; }
 .file-input { padding:10px; border:2px dashed #ddd; border-radius:10px; text-align:center; margin-bottom:12px; }
+.chip { display:inline-block; padding:8px 12px; border:1.5px solid #e5e5e5; border-radius:20px; margin:0 6px 8px 0; font-size:14px; color:#1a1a1a; text-decoration:none; background:#fafafa; }
+.chip.active { background:#1a1a1a; color:#fff; border-color:#1a1a1a; }
 </style>
 </head>
 <body>
@@ -271,35 +277,17 @@ textarea { min-height:80px; resize:vertical; font-family:inherit; }
     <p>6 种展示模式 · 刷新策略自由选 · 零越狱</p>
 </div>
 
-<form id="mainForm" action="/generate" method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="mode" id="modeInput" value="info">
+<div class="mode-grid">
+    {% for key, icon, title in modes %}
+    <a class="mode-card{% if key == mode %} active{% endif %}" href="/?mode={{ key }}">
+        <span class="icon">{{ icon }}</span>
+        <span class="title">{{ title }}</span>
+    </a>
+    {% endfor %}
+</div>
 
-    <div class="mode-grid">
-        <div class="mode-card active" data-mode="info" onclick="setMode(this)">
-            <span class="icon">📊</span>
-            <span class="title">信息面板</span>
-        </div>
-        <div class="mode-card" data-mode="board" onclick="setMode(this)">
-            <span class="icon">📋</span>
-            <span class="title">个人看板</span>
-        </div>
-        <div class="mode-card" data-mode="frame" onclick="setMode(this)">
-            <span class="icon">🖼</span>
-            <span class="title">电子相框</span>
-        </div>
-        <div class="mode-card" data-mode="reading" onclick="setMode(this)">
-            <span class="icon">📚</span>
-            <span class="title">阅读进度</span>
-        </div>
-        <div class="mode-card" data-mode="pomodoro" onclick="setMode(this)">
-            <span class="icon">🍅</span>
-            <span class="title">番茄钟</span>
-        </div>
-        <div class="mode-card" data-mode="words" onclick="setMode(this)">
-            <span class="icon">🔤</span>
-            <span class="title">单词卡片</span>
-        </div>
-    </div>
+<form action="/generate" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="mode" value="{{ mode }}">
 
     <div class="card">
         <h2>通用设置</h2>
@@ -312,7 +300,8 @@ textarea { min-height:80px; resize:vertical; font-family:inherit; }
         </select>
     </div>
 
-    <div id="panel-info" class="card">
+    {% if mode == "info" %}
+    <div class="card">
         <h2>📊 信息面板设置</h2>
         <label>城市</label>
         <select name="city">
@@ -335,8 +324,10 @@ textarea { min-height:80px; resize:vertical; font-family:inherit; }
         </select>
         """ + build_refresh_select("60") + """
     </div>
+    {% endif %}
 
-    <div id="panel-board" class="card hidden">
+    {% if mode == "board" %}
+    <div class="card">
         <h2>📋 个人看板设置</h2>
         <label>待办事项（每行一个）</label>
         <textarea name="todos" placeholder="完成报告&#10;预约牙医&#10;买牛奶"></textarea>
@@ -347,24 +338,30 @@ textarea { min-height:80px; resize:vertical; font-family:inherit; }
         <textarea name="habits" placeholder="早起&#10;阅读30分钟&#10;运动"></textarea>
         """ + build_refresh_select("300") + """
     </div>
+    {% endif %}
 
-    <div id="panel-frame" class="card hidden">
+    {% if mode == "frame" %}
+    <div class="card">
         <h2>🖼 电子相框设置</h2>
         <label>上传照片（可多张，建议 3-10 张）</label>
         <input type="file" name="photos" multiple accept="image/*" class="file-input">
-        <p class="hint">后端自动转为 E-ink 灰度高对比度图片</p>
+        <p class="hint">后端自动转为 E-ink 灰度高对比度图片（建议在手机上配置上传）</p>
         """ + build_refresh_select("30") + """
     </div>
+    {% endif %}
 
-    <div id="panel-reading" class="card hidden">
+    {% if mode == "reading" %}
+    <div class="card">
         <h2>📚 阅读进度设置</h2>
         <label>书籍信息（格式：书名|当前页|总页数，每行一本）</label>
         <textarea name="books" placeholder="三体|280|400&#10;百年孤独|120|360&#10;人类简史|45|300"></textarea>
         <p class="hint">自动计算阅读百分比并渲染进度条</p>
         """ + build_refresh_select("300") + """
     </div>
+    {% endif %}
 
-    <div id="panel-pomodoro" class="card hidden">
+    {% if mode == "pomodoro" %}
+    <div class="card">
         <h2>🍅 番茄钟设置</h2>
         <label>专注时长（分钟）</label>
         <input type="number" name="duration" value="25" min="1" max="120">
@@ -381,24 +378,32 @@ textarea { min-height:80px; resize:vertical; font-family:inherit; }
         </select>
         <p class="hint">E-ink 屏幕刷新有闪烁，10 秒是精度与体验的平衡</p>
     </div>
+    {% endif %}
 
-    <div id="panel-words" class="card hidden">
+    {% if mode == "words" %}
+    <div class="card">
         <h2>🔤 单词卡片设置</h2>
-        <label>语种</label>
-        <select name="language" id="langSelect" onchange="updateBooks()">
-            {% for k,v in wordbank.items() %}
-            <option value="{{ k }}">{{ v.flag }} {{ v.name }}</option>
+        <label>语种（点击切换，页面会刷新）</label>
+        <div class="chip-row">
+            {% for k, v in wordbank.items() %}
+            <a class="chip{% if k == lang %} active{% endif %}" href="/?mode=words&lang={{ k }}">{{ v.flag }} {{ v.name }}</a>
+            {% endfor %}
+        </div>
+        <input type="hidden" name="language" value="{{ lang }}">
+        <label>词书</label>
+        <select name="book">
+            {% for bk, bv in books.items() %}
+            <option value="{{ bk }}">{{ bv.name }}</option>
             {% endfor %}
         </select>
-        <label>词书</label>
-        <select name="book" id="bookSelect"></select>
         <label>显示内容</label>
-        <div class="checkbox-row"><input type="checkbox" name="show_phonetic" checked><span>音标/发音</span></div>
-        <div class="checkbox-row"><input type="checkbox" name="show_meaning" checked><span>释义</span></div>
-        <div class="checkbox-row"><input type="checkbox" name="show_example" checked><span>例句</span></div>
-        <div class="checkbox-row"><input type="checkbox" name="show_progress" checked><span>进度</span></div>
+        <div class="checkbox-row"><input type="checkbox" name="show_phonetic" checked> <span>音标/发音</span></div>
+        <div class="checkbox-row"><input type="checkbox" name="show_meaning" checked> <span>释义</span></div>
+        <div class="checkbox-row"><input type="checkbox" name="show_example" checked> <span>例句</span></div>
+        <div class="checkbox-row"><input type="checkbox" name="show_progress" checked> <span>进度</span></div>
         """ + build_refresh_select("300") + """
     </div>
+    {% endif %}
 
     <button type="submit" class="btn">生成 Kindle 展示链接</button>
 </form>
@@ -410,30 +415,6 @@ textarea { min-height:80px; resize:vertical; font-family:inherit; }
     3. 在搜索框输入 <code>~ds</code> 并按回车（禁止锁屏）<br>
     4. 插上电源，即可长期展示
 </div>
-
-<script>
-const bookData = {{ books_json|safe }};
-function setMode(el) {
-    document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    const mode = el.dataset.mode;
-    document.getElementById('modeInput').value = mode;
-    document.querySelectorAll('[id^="panel-"]').forEach(p => p.classList.add('hidden'));
-    document.getElementById('panel-' + mode).classList.remove('hidden');
-}
-function updateBooks() {
-    const lang = document.getElementById('langSelect').value;
-    const sel = document.getElementById('bookSelect');
-    sel.innerHTML = '';
-    const books = bookData[lang] || {};
-    for (const [k, v] of Object.entries(books)) {
-        const opt = document.createElement('option');
-        opt.value = k; opt.textContent = v.name;
-        sel.appendChild(opt);
-    }
-}
-updateBooks();
-</script>
 
 </body>
 </html>
@@ -448,7 +429,8 @@ TMPL_INFO = """
 <title>Kindle Info</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
+html { height:100%; }
+body { width:{{ w }}px; height:100%; background:#fff; color:#000;
     font-family:"Georgia","Times New Roman",serif; overflow:hidden; position:relative; }
 .vc { display:table; width:100%; height:100%; }
 .vc-cell { display:table-cell; vertical-align:middle; text-align:center; }
@@ -485,7 +467,8 @@ TMPL_BOARD = """
 <title>Kindle Board</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
+html { height:100%; }
+body { width:{{ w }}px; height:100%; background:#fff; color:#000;
     font-family:"Georgia","Times New Roman",serif; padding:{{ pad }}px; overflow:hidden; position:relative; }
 h1 { font-size:{{ t_title }}px; margin-bottom:16px; border-bottom:2px solid #000; padding-bottom:8px; }
 .section { margin-bottom:20px; }
@@ -531,7 +514,8 @@ TMPL_FRAME = """
 <title>Kindle Frame</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { width:{{ w }}px; height:{{ h }}px; background:#000; overflow:hidden; position:relative; }
+html { height:100%; }
+body { width:{{ w }}px; height:100%; background:#000; overflow:hidden; position:relative; }
 .vc { display:table; width:100%; height:100%; }
 .vc-cell { display:table-cell; vertical-align:middle; text-align:center; }
 img { max-width:100%; max-height:{{ h }}px; filter:contrast(1.2); }
@@ -553,7 +537,8 @@ TMPL_READING = """
 <title>Kindle Reading</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
+html { height:100%; }
+body { width:{{ w }}px; height:100%; background:#fff; color:#000;
     font-family:"Georgia","Times New Roman",serif; padding:{{ pad }}px; overflow:hidden; position:relative; }
 h1 { font-size:{{ t_title }}px; margin-bottom:20px; border-bottom:2px solid #000; padding-bottom:8px; }
 .book { margin-bottom:18px; }
@@ -585,7 +570,8 @@ TMPL_POMO = """
 <title>Kindle Pomodoro</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
+html { height:100%; }
+body { width:{{ w }}px; height:100%; background:#fff; color:#000;
     font-family:"Georgia","Times New Roman",serif; overflow:hidden; position:relative; }
 .vc { display:table; width:100%; height:100%; }
 .vc-cell { display:table-cell; vertical-align:middle; text-align:center; }
@@ -618,7 +604,8 @@ TMPL_WORDS = """
 <title>Kindle Word</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
+html { height:100%; }
+body { width:{{ w }}px; height:100%; background:#fff; color:#000;
     font-family:"Georgia","Times New Roman",serif; overflow:hidden; position:relative; }
 .vc { display:table; width:100%; height:100%; }
 .vc-cell { display:table-cell; vertical-align:middle; text-align:center; padding:0 {{ pad }}px; }
@@ -654,10 +641,19 @@ body { width:{{ w }}px; height:{{ h }}px; background:#fff; color:#000;
 
 @app.route("/")
 def index():
-    books_js = {}
-    for lk, lv in WORD_BANK.items():
-        books_js[lk] = {bk: {"name": bv["name"]} for bk, bv in lv["books"].items()}
-    return render_template_string(CONFIG_HTML, wordbank=WORD_BANK, books_json=json.dumps(books_js))
+    mode = request.args.get("mode", "info")
+    valid_modes = {k for k, _, _ in MODE_DEFS}
+    if mode not in valid_modes:
+        mode = "info"
+    lang = request.args.get("lang", "english")
+    if lang not in WORD_BANK:
+        lang = "english"
+    return render_template_string(CONFIG_HTML,
+        modes=MODE_DEFS,
+        mode=mode,
+        lang=lang,
+        wordbank=WORD_BANK,
+        books=WORD_BANK[lang]["books"])
 
 
 @app.route("/generate", methods=["POST"])
