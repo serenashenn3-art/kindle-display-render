@@ -4,6 +4,7 @@ import json
 import random
 import requests
 import base64
+import gzip
 import io
 import zlib
 from datetime import datetime
@@ -137,44 +138,93 @@ WORD_BANK = {
 }
 
 # ==================== 远程扩充词库（启动时拉取，失败用内置词库兜底） ====================
-# 英语词条/音标/释义来自 ECDICT（MIT 开源词典）；各语种例句来自 tatoeba.org（CC-BY 2.0 FR），
-# 例句中文翻译 = Tatoeba 中文句对 + 人工补译。多个来源逐一拉取合并，单个失败不影响其它。
-REMOTE_BANK_URLS = [
-    "https://raw.githubusercontent.com/serenashenn3-art/kindle-display-render/main/words_extra.b64",
-    "https://paste.rs/PydxG",   # 英语 721 词（cet4/cet6/kaoyan/ielts/toefl/gre/business）
-    "https://paste.rs/I4hhZ",   # 日语 JLPT N5-N1 345 词
-    "https://paste.rs/49Blh",   # 法/西/德/意/俄 289 词
-    "https://paste.rs/TQrbu",   # 韩/葡/粤/中文 222 词
-]
+# 词库来源清单维护在仓库 wordbank_sources.txt（以后更新词库只改该文件，无需动代码）：
+#   json <url>  —— 明文 JSON 词库（兼容旧的 zlib+base64 封装）
+#   b64  <url>  —— gzip+base64 分片，按行序拼接解码为一个 JSON 词库
+# 英语词条/音标/释义来自 ECDICT（MIT 开源词典）；例句来自 tatoeba.org（CC-BY 2.0 FR），
+# 例句中文翻译 = Tatoeba 中文句对 + 人工补译。单个来源失败不影响其它。
+SOURCES_URL = "https://raw.githubusercontent.com/serenashenn3-art/kindle-display-render/main/wordbank_sources.txt"
+EMBEDDED_SOURCES = """
+json https://paste.rs/PydxG
+json https://paste.rs/I4hhZ
+json https://paste.rs/49Blh
+json https://paste.rs/TQrbu
+b64 https://paste.rs/OZSpM
+b64 https://paste.rs/FtU4T
+b64 https://paste.rs/br2m6
+b64 https://paste.rs/6Egnm
+b64 https://paste.rs/GCUlE
+b64 https://paste.rs/MGKQL
+b64 https://paste.rs/Mpx8f
+b64 https://paste.rs/tXX1A
+b64 https://paste.rs/vXG3M
+b64 https://paste.rs/avC5q
+"""
+
+def _merge_bank(data):
+    n = 0
+    for lang, lpack in (data or {}).items():
+        if lang == "meta" or lang not in WORD_BANK or not isinstance(lpack, dict):
+            continue
+        for bk, pack in lpack.items():
+            words = pack.get("words") if isinstance(pack, dict) else pack
+            if bk in WORD_BANK[lang]["books"] and words:
+                WORD_BANK[lang]["books"][bk]["words"] = [
+                    {"word": w["w"], "phonetic": w.get("p", ""), "meaning": w.get("m", ""),
+                     "example": w.get("e", ""), "example_cn": w.get("c", "")}
+                    for w in words]
+                if isinstance(pack, dict) and pack.get("name"):
+                    WORD_BANK[lang]["books"][bk]["name"] = pack["name"]
+                n += len(words)
+    return n
+
+def _parse_bank_payload(raw):
+    for algo in ("gzip", "zlib", "plain"):
+        try:
+            if algo == "gzip":
+                return json.loads(gzip.decompress(base64.b64decode(raw)).decode("utf-8"))
+            if algo == "zlib":
+                return json.loads(zlib.decompress(base64.b64decode(raw)).decode("utf-8"))
+            return json.loads(raw.decode("utf-8"))
+        except Exception:
+            continue
+    return None
 
 def load_remote_bank():
+    try:
+        src = requests.get(SOURCES_URL, timeout=8).text
+        if "json" not in src and "b64" not in src:
+            src = EMBEDDED_SOURCES
+    except Exception:
+        src = EMBEDDED_SOURCES
+    json_urls, b64_urls = [], []
+    for line in src.splitlines():
+        parts = line.split()
+        if len(parts) != 2:
+            continue
+        kind, url = parts
+        if kind == "json":
+            json_urls.append(url)
+        elif kind == "b64":
+            b64_urls.append(url)
     total = 0
-    for url in REMOTE_BANK_URLS:
+    for url in json_urls:
         try:
-            r = requests.get(url, timeout=12)
-            raw = r.content
-            try:
-                data = json.loads(zlib.decompress(base64.b64decode(raw)).decode("utf-8"))
-            except Exception:
-                data = json.loads(raw.decode("utf-8"))
-            n = 0
-            for lang, lpack in (data or {}).items():
-                if lang == "meta" or lang not in WORD_BANK or not isinstance(lpack, dict):
-                    continue
-                for bk, pack in lpack.items():
-                    words = pack.get("words") if isinstance(pack, dict) else pack
-                    if bk in WORD_BANK[lang]["books"] and words:
-                        WORD_BANK[lang]["books"][bk]["words"] = [
-                            {"word": w["w"], "phonetic": w.get("p", ""), "meaning": w.get("m", ""),
-                             "example": w.get("e", ""), "example_cn": w.get("c", "")}
-                            for w in words]
-                        if isinstance(pack, dict) and pack.get("name"):
-                            WORD_BANK[lang]["books"][bk]["name"] = pack["name"]
-                        n += len(words)
-            total += n
-            print(f"[wordbank] loaded {n} words from {url}")
+            data = _parse_bank_payload(requests.get(url, timeout=15).content)
+            if data:
+                total += _merge_bank(data)
+                print(f"[wordbank] merged {url}")
         except Exception as exc:
             print(f"[wordbank] fetch failed {url}: {exc}")
+    if b64_urls:
+        try:
+            blob = "".join(requests.get(u, timeout=15).text for u in b64_urls)
+            data = json.loads(gzip.decompress(base64.b64decode(blob)).decode("utf-8"))
+            total += _merge_bank(data)
+            print(f"[wordbank] merged {len(b64_urls)} b64 shards")
+        except Exception as exc:
+            print(f"[wordbank] b64 shards failed: {exc}")
+    print(f"[wordbank] total remote words: {total}")
     return total > 100
 
 try:
