@@ -9,7 +9,7 @@
 3. 连接你的 GitHub 仓库 `kindle-display-render`
 4. 环境选 **Python 3**，或使用仓库内 `render.yaml` 自动配置
 5. Build Command：`pip install -r requirements.txt`
-6. Start Command：`gunicorn app:app --bind 0.0.0.0:$PORT --workers 2`
+6. Start Command：`gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4`（**必须单 worker**，配置存在内存里，多 worker 会导致展示链接随机 404）
 7. 点击 **Deploy**，等待 2-3 分钟
 8. 获得 `https://xxx.onrender.com` 公网地址
 
