@@ -1,0 +1,669 @@
+#separator:Comma
+#html:false
+#guid column:4
+expression,reading,meaning,guid
+都,みやこ,Metropolitan,07B6shuYAOa8wY2tTbF0
+捕まえる,つかまえる,"Catch, arrest",07rFvDL7DLURX1q4gvDE
+聞こえる,きこえる,be audible,0AgL1837Ro8HsQGDAoEd
+植える,うえる,plant,0UDms7kazYcRo95dc4QG
+林,はやし,woods,0XKmjQSvhcZeD3lMzCDz
+～ちゃん,～ちゃん,-chan,0Yg6Qw33nYudzGzHrCkF
+それに,それに,"Moreover, besides",0ZdLNknTX3YgEwZHlS4T
+線,せん,"line, wire",0etsZOra47JexwmxZ2Zs
+～ございます,～ございます,"to be (polite)pəˈlaɪt, to exist",0fbkM71lWYY5e3oJahBL
+負ける,まける,lose,0slHENxiQcGxAM6e8pX9
+謝る,あやまる,Apologize,11koZvFBrFGVhJGKtNpy
+立てる,たてる,Stand up,13lkrKecYD96HUDJa0yg
+出席,しゅっせきする,Attendance,1TrQcEnt7U7RyWKHDJ15
+真面目,まじめ,"Diligent, serious",1aLrL8xNWPNxAKoosFgC
+すっと,すっと,"straight, quickly",1amsarKmotrh8Erstoxv
+島,しま,Island,1bSGgst1FVSjTYAYZiAI
+乾く,かわく,Dry,1iRBbpJm3OW9hhUdmTJU
+気持ち,きもち,"Feeling, sensation, mood",1uP0RBYkQb0JXZQp4Iu8
+神社,じんじゃ,Shinto shrine,1udXN6wb2n4ZTahkAAO8
+～員,～いん,Member of ~,25kLcZFbEHtrwSIjsBYr
+息子,むすこ,Son,2810IMMMrvwMHMPkGGgW
+おつり,おつり,Change,2816z9oBozHW6jaTGihZ
+看護婦,かんごふ,nurse,2AwQij8jh06Txt9N2Phb
+辞典,じてん,Dictionary,2BpiKrOeiDFj52IH1F2M
+講堂,こうどう,Auditorium,2FL3n5Coye5YSXkDH98G
+受付,うけつけ,Reception desk,2GSAIwcw3c2vFiIQJ84q
+御～,おん～,Honorable ~,2GjE6taoO9Wb3euigrdE
+サンドイッチ,サンドイッチ,Sandwich,2I0kz7jNs2PJyEkK9AEQ
+注射,ちゅうしゃ,Injection,2MRWMe8lhJk3YqTWlZeo
+技術,ぎじゅつ,"Technology, technique, skill",2V7aqQ1bAdKEf9xGFDWh
+遠く,とおく,Distant,2YGLW0xHcv7jhwYCvGCU
+けがする,けがする,injure oneself,2gkcyYDrQKVpl3vAtUi6
+ごちそう,ごちそう,"Feast, treat",3CyAim5cE1fAA2RQq2Iy
+再来月,さらいげつ,The month after next.,3DJLoxlODUFV9vqm1zuq
+熱,ねつ,"fever, temperature",3EK5CRimszTpHjzI9YYM
+彼女,かのじょ,girlfriend; she,3QobmAwu63s16xqRIo1c
+湖,みずうみ,Lake,3RvdmZAOezrKQWu8X7gF
+～ばかり,～ばかり,"just did, only",3YeL0XNvcipEUCVriYgA
+足す,たす,Add,3odNAQgw70odS3ZWcGFb
+億,おく,one hundred million,3xa78ID7AtjktIrm6wOX
+特に,とくに,Particularly,4881uzLoFCHB2KXeerB1
+運動,うんどうする,Exercise,48gn8FWuR8NG3YvJrrqu
+さっき,さっき,A little while ago,493mTpIDMvUSbJKvFHo6
+絹,きぬ,Silk,4OYjvN8IIfuo1q8G2ecm
+祖父,そふ,Grandfather,4PyHJLbWI2AIE0Sc0H48
+済む,すむ,"Finish, end",4TroCjBVFy2pVKlcbEfG
+ぶどう,ぶどう,Grapes,4hAwnV27lCRoRYD085pC
+調べる,しらべる,"check, look up, inquire, search",4iAEUc6Y6LgXhXfFo0FQ
+専門,せんもん,speciality,4kyFSpfvYO0tR2Xv1GDQ
+見物,けんぶつ,Sightseeing,4okzDoRbs9r5XOq7ygcJ
+用,よう,"Errand, task, business",4qwaTtZLRNQdkApJy1hq
+逃げる,にげる,"escape, run away",4rGa8fzHiL443quqCzDk
+天気予報,てんきよほう,Weather forecast,4rZMMmOtgpHxRWIViYic
+アナウンサー,アナウンサー,announcer,55e6xLFZ9j9lha5CRYHb
+腕,うで,arm,59zukHkeVO5SjM9FbEnm
+坂,さか,"Slope, Hill",5BHsBRJhMXWJxPqB1IQA
+高校生,こうこうせい,high school student,5Vciwujx68ObjJpxfAH9
+アフリカ,アフリカ,Africa,5VybPPVX2hhGcmkHT0Uv
+今夜,こんや,Tonight,5XbHzK5pPZGZS3g56HzL
+米,こめ,Uncooked rice,5YtRrBWW7EtFYL0SaVwx
+～にくい,～にくい,difficult to do,5Zi3oi81zEGp06Ca0QRZ
+ハンバーグ,ハンバーグ,Hamburger steak,5aBmT0kZcC7yS7DD5ytz
+特別,とくべつ,special,5xyM6HSRuKRDT3Nw91Ec
+床屋,とこや,Barber shop,62bbjczBQoyDmFN1VnUK
+～区,～く,"Ward, district",688f4XNOFJwV6FsmGEmX
+アルバイト,アルバイト,Part-time job,6Ei9ESB9rRdLG7SzinxT
+駐車場,ちゅうしゃじょう,Parking lot,6OgI8xUte2l0ImgoCyR1
+一度,いちど,Once,6Qr4wSzSfcZyumAqh4JD
+直る,なおる,be fixed,6YToqxqXNZHS3cAK9y3c
+僕,ぼく,I,6YgioaQ7DRP01GHYK1X3
+案内,あんないする,"Guidance, information",6fx3yZblAstOUaosreNv
+ジャム,ジャム,Jam,6o0EDap7wQzDq7kCoQEQ
+カーテン,カーテン,Curtain,6rrOo20KJ01L5FFMblk6
+下りる,おりる,"get down, go down, come down",75JiWKMzH6mUZMlDiT7J
+最近,さいきん,"Recently, nowadays, in recent years, most recent, latest",79fVOs1zNFGTWUvdeOAB
+布団,ふとん,Futon,7AGJIcEGAzvOncIq599h
+社長,しゃちょう,President of a company,7PsT6QmzRI5idcmN98OA
+ご主人,ごしゅじん,Husband,7XmJ4v6cwLkaqwAJjJkB
+指,ゆび,finger,7f2pXP6Q2n4tfwUzZRBl
+オーバー,オーバー,"Overcoat; over, exceeding, exaggeration",7n4hSWYQI7nZefn0x79U
+美術館,びじゅつかん,Art museum,84BwwOfSHwSVZBU8cLqV
+格好,かっこう,"Appearance, manner, shape, form, posture",886UJ8vcagV3oVjZDuCF
+差し上げる,さしあげる,Give,8BeA1QjLPSdW6BXos65a
+捨てる,すてる,"throw away, dump, discard",8BifQnk2d2WaiVXivVXt
+研究室,けんきゅうしつ,"Laboratory, Research office",8EDAId3Pd3yuk2pJ3TJF
+すっかり,すっかり,completely,8EWtgLnpkjo3rKjFJRpC
+十分,じゅうぶん,Enough,8HFHdhF0kIas3vplvQFC
+知らせる,しらせる,notify,8JK8BAcq54HGOpEi4nrG
+匂い,におい,"Odor, smell",8WEk8I1cdz7w7ztzVO5p
+思い出す,おもいだす,"Recall, remember",9N4Odpg7djWLleMKcwc4
+～目,～め,"-th (or -nd, -rd, -st)",9Y1cpfeVnpzy9HRX462d
+そろそろ,そろそろ,"soon, gradually",9euMfpg4q5RaZt4zaYnk
+怒る,おこる,get angry; scold angrily,9fSKzivsTBNcw7Hl2iRd
+説明,せつめい,Explanation,9i6lqQ8wqYFEEqvh8aJB
+事,こと,"thing, matter, fact",9oZ05eXP8kdrz2JYdz4l
+ほとんど,ほとんど,"mostly, almost",9qsTf0T0tZkz3IX057wB
+砂,すな,Sand,9ww0mYsMS2CVaeQKC8Af
+くれる,くれる,"give, do for",9x0S4OToCAfUilIHlC0S
+反対,はんたい,"Oppose, opposition, resistance",A0I93p7PPobzYZtudq0z
+通る,とおる,"Pass (by), go through",AKXcky6L6mTLUtkxHIxQ
+子,こ,Child,AMkkEMkuyJhC2mPsbNzZ
+品物,しなもの,Goods,AOn8RacHX7AuTmuYtLnB
+値段,ねだん,Price,AR9LqCZnGiRGN1leyvHl
+うん,うん,"Yeah, all right",Akf9weIcLpJDqBa8PYo7
+～(て) しまう,～(て) しまう,end up ~[/~/,AtzJuf6dgB2pU9eR8iTY
+素晴らしい,すばらしい,"Wonderful, terrific",Au7L5oT4GjilAjS3GW4b
+残念,ざんねん,Regrettable,AubmMNQtosvE5I0nEg5s
+～軒,～けん,counter for houses,B6z7IkyizDHYAPLbhms5
+褒める,ほめる,Praise,BAPd39Jcqnnq8ELtBs3R
+政治,せいじ,Politics,BG1gxFKDXcs6gmuhqZfk
+彼,かれ,"He, boyfriend",BGPoRWywEuGlSqxVRyff
+別,べつ,"Distinction, different",BMyQfn5b0pHsIPS3SAm0
+片付ける,かたづける,"tidy up, put away",BT9ssTqW6EqsHmtI2ss6
+眠い,ねむい,Sleepy,BXxJlPeCRmTOnNUcrkHG
+押し入れ,おしいれ,Closet,BYmMjpat8znTLmbgazBZ
+迎える,むかえる,"welcome, meet, greet",BfSpLMTr09T0gNRxjZSQ
+店員,てんいん,clerk; shop],BkMJ4kpgZL88UXtAc4q4
+周り,まわり,surroundings,BkdtTfMNBtqhsQDi4WPA
+人形,にんぎょう,"doll, figure",BtaD7MR2I0jdUleMNBHV
+失敗,しっぱい,"failure, mistake",BzvMctzohv9EKWAVnXZQ
+冷房,れいぼう,Air conditioning,C1NA1dUPfMWU81gMFYZJ
+そう,そう,"So, right",C4hszeLLQCN4ILqBXwPQ
+いらっしゃる,いらっしゃる,"to come, go, or be",CTXkwFk8v43gKD68MOIW
+ワープロ,ワープロ,Word processor,CYygQoINWZE5KgPpgr8K
+興味,きょうみ,interest,CeD9ikaWTUI2lT37ZqIE
+空港,くうこう,airport,CiqE3d0flSenV1y5zMen
+火,ひ,Fire,CmjytVqmFWYfkc6AhCiV
+やっと,やっと,Finally,CnUiOKIG0QBSv5Hjxhwg
+きっと,きっと,"Surely, definitely, undoubtedly, certainly",CsCMSYRiVjUU7PS8S3lg
+間違える,まちがえる,make a mistake,CsQjoUStYAT4G91KTdQ2
+堅; 硬; 固い,かたい,"Solid, hard, firm",CtqzfO7KTJNzWrkOgxoc
+なるほど,なるほど,I see; I now understand,CuQD8hIEtLVdZu24BgWR
+サンダル,サンダル,Sandal,Cud6B8ESAoPBj8JLM6oT
+小説,しょうせつ,Novel,D5KjAuzIHJRxj2JhmGIy
+～始める,～はじめる,start to do ~,DDXraOaUrWiSeIJIKoup
+倒れる,たおれる,"collapse, break down",DGiMwAPzG0lz5ZiFJwhd
+～だす,～だす,start to do,DIXo2WzwLEbR0WgahtT2
+お嬢さん,おじょうさん,Daughter,DNJWzLEoRuCXkj4yDVHk
+どんどん,どんどん,"rapidly, steadily",DTlCpvNjetv1D4OM2p7e
+急行,きゅうこう,Express train,DXdLLSCAi0CHX87LEw1e
+あんな,あんな,"such, like that",DcCahouAr1nLwxk69hWf
+中々,なかなか,"Quite, considerably",Dlb9jyiQJdGjAmcPCMHA
+おる,おる,"to be, to exist",E8xRSXj6NtG0m2klk6sC
+将来,しょうらい,Future,ECIdcwARbqq8DdppmvoW
+打つ,ぶつ,"Hit, strike",EDvhJf5mIHhLHPTePAR6
+回る、回す,まわる、まわす,"Go around, revolve; spin, turn",EFqwXMOKo7hRfWCnHa1u
+以内,いない,within,EHW2mKc6u0NGt5g9ymhC
+寄る,よる,stop by,EM0BP0gPEq97Eg798XjQ
+久しぶり,ひさしぶり,Long time no see,EQTFJhNh2B95Zh23VIkE
+くださる,くださる,"Give, confer",EU5TvsdKTLFY5S6Iiff1
+関係,かんけい,"relationship, connection",EYChYAf6sHiZZbd1FCFK
+嘘,うそ,Lie,EcuV1VM4OJlG1LqnPQ8f
+赤ん坊,あかんぼう,Baby,EnNR4U0sOru6jKdiM3vW
+比べる,くらべる,compare,F8nKwZBlf2BlwsRNSxQe
+入学,にゅうがくする,Enrollment,F9PQqzPZCQaFSkGhcNyI
+騒ぐ,さわぐ,"Make noise, clamor",FMGyqat9haoNyFrYplld
+ごみ,ごみ,"trash, garbage",FQhNkKzYDyjDkivNBD81
+丁寧,ていねい,"Polite, courteous, careful",FRu3DEBmCuqahNXv3CfH
+滑る,すべる,"Slide, slip",FYQr044J03J7jZhYqRTc
+頑張る,がんばる,Do one's best,FcLrP9XAZDPhpVqQFKPB
+なるべく,なるべく,As much as possible,Fd4owXPDKQbsQ5jW4hrm
+コンサート,コンサート,Concert,Fg0yljf7KR11isV1A0Mm
+工業,こうぎょう,Industry,Fm8GZb6gW2tlvv3wERJg
+選ぶ,えらぶ,"choose, select",FvAGBqsvvr9DKF5qi6Hn
+折れる,おれる,"to break, to be folded, to give in; to turn (a corner)",FwjWdvHW1Bi0TOI9sikz
+試験,しけん,Exam,Fyx6OKpwzWpE7Yy9oXrO
+全然,ぜんぜん,not at all,FzjaHQ7dvaJZsPwnuL7s
+虫,むし,Insect,G0KKi3wEfbNQulx7KYhx
+踏む,ふむ,step on,G4M3vVaefssPkEzxerwx
+医学,いがく,medical science,G4agBDwscGvrWbg2GWks
+裏,うら,"Reverse side, back",G4bQ8QIS3sgRxuM72LyD
+けれど; けれども,けれど; けれども,"but, although",G4cAZFxjFB3iFQmNtNlG
+嬉しい,うれしい,Happy,G5bjT6Ghdr6Uf3hDYeCI
+うかがう,うかがう,ask,GHP8vl1w7XXx4goR3nBN
+変える,かえる,"change, alter, vary",GJQsKZy70aExSQRZfIyj
+人口,じんこう,population,GQD9Whqj64NMKU8uoDzV
+尋ねる,たずねる,inquire,GT0QhQiwMuTrnKpiVouv
+教育,きょういく,Education,GfUBB5dHUjFk6njFi3w8
+終わり,おわり,End,GlT7FjPm6oK8j2wpjbcV
+お金持ち,かねもち; おかねもち,Rich person,Gpc3swGvYtAJ0w2BhNEW
+これから,これから,From now on,GtWjRGDBCDBdUDA1WKRQ
+あ,あ,Ah,GwVhE7tnGjsIPdzhMCNJ
+校長,こうちょう,Principal,H11Xwdi0JoXqpwM3zcrW
+～学部,～がくぶ,Department of ,HBFEXQqR808ssxGGqeOq
+会議室,かいぎしつ,Conference room,HHk3I7asMYJA0o3yBFPj
+連絡,れんらく,"Communication, Contact, Connection",HK2gEaKbZyTGcsTH1rVh
+ガス,ガス,Gas,HN755tLXrthfoqe71Pi7
+地震,じしん,earthquake,HQIhLyWb0D8qBA9n2mC9
+触る,さわる,Touch,HZEvrNc1sck2Sjca3nty
+復習,ふくしゅう,Review,Hbd3LN3NRbMviFMZhZJW
+代わり,かわり,"Substitute, replacement",HgqKR0mObqDMJKsQ9CGt
+～代,～だい,"-aged, -s",Hjvpx4RG3bf3cKuALltF
+食事,しょくじする,Meal,Hl37beuo7hW3rH5L3tHC
+深い,ふかい,"deep, profound",HmDc5k6Lq7tgB4X55ZcJ
+光,ひかり,Light,Ht2rA6nd7YYZC7m8czEF
+途中,とちゅう,On the way,HxVgX23SqUOs7mwiHrw7
+～様,～さま,"Mr.ˈmɪstər, Mrs.ˈmɪsɪz, Ms.mɪz",I9j7il8U5zBPjueSbNiO
+もし,もし,If,IC01GyWIvsia9CGMa2vT
+皆,みな,Everyone,ICfQ7FPq9YCQURENp7SS
+中学校,ちゅうがっこう,Junior high school pupil,IHVfThm3lW0jd007oG37
+大学生,だいがくせい,University student,IQn2uwYmgKoXC3qdJ06f
+集める,あつめる,"collect, gather, assemble",ISgzrpxWlJW5VLMFuwcX
+利用,りよう,"Use, utilization",IUIsPDG3yjfTXAMFrEHM
+訪ねる,たずねる,visit,IVMl3ehvfzNmTpXIDv1n
+スクリーン,スクリーン,Screen,IeG8Uhv3QVOJJzJLp1al
+致す,いたす,to do,IexXPf2Gx7GipSCbHgNM
+再来週,さらいしゅう,The week after next,J5muxfsUW8ReOSbTnAx2
+公務員,こうむいん,Civil servant,JUg9fJJCIJJ5xgAH7FKn
+それで,それで,"And, thereupon, because of that",JXOM3Ch4mkq7u8UMnVlH
+複雑,ふくざつ,"Complexity, complication",JaPKjQIWgBWjpDirP6ue
+高校; 高等学校,こうこう; こうとうがっこう,High school; Senior high school,Jg2rGbbL07rp8TwAPREn
+規則,きそく,"rule, regulation",JmQAgajtqFTDiiii2Ydz
+気分,きぶん,"Feeling, mood",Jo4Co47h5KuFHUdrPxiw
+間,ま,"Space, interval",Jv3YD7rlj94PPScvbuqE
+始める,はじめる,"start, begin",K45y5X8z5G3kr8ORX7nx
+遅れる,おくれる,be late,KBOFyZDzlvV7KT5QvWOZ
+手袋,てぶくろ,Glove,KDsIdDYD20baDtf4V8rM
+柔道,じゅうどう,Judo,KH1JHpWRiUslPMAHEPdj
+止める,とどめる,Stop,KLDwQnMZIcunrdXPed9z
+移る,うつる,"Move, transfer, shift",KREeik0aQ2vPokgWBQv5
+工場,こうば,factory,KToF9K2wIWtRwmDxbxc8
+為,ため,For the sake of,KaPo6O3QLg6pXJmoahDN
+下宿,げしゅく,Boarding house,KgakeonGYpJhEI8heabJ
+訳,やく,"Reason, explanation",KhQ4e8R98wsVK35mUP70
+または,または,"or, otherwise",Kmzcniqs2b8R5J7Axb9L
+アルコール,アルコール,Alcohol,Ku2wR5wRdsRa6W5CS8Io
+おもちゃ,おもちゃ,Toy,LEIRjTjYYtAJj3nGFXss
+妻,つま,Wife,LF2kxHbPkYO0qonzAUfn
+届ける,とどける,deliver,LJD88PyYPdn43pjaaWGd
+漬ける,つける,"soak, moisten, pickle",LSwUKnLzDLxXURGOKE7J
+お子さん,おこさん,Child,LVNT6EkEtHDLBnThWnMr
+試合,しあい,"Match, game, competition",LZSBSOgrnBe0lheJt8KF
+～(に) よると,～(に) よると,according to,Lc3RnFO6XkJCdATpIfhh
+ピアノ,ピアノ,piano,LdSdRSanTfpEBEQ51d25
+急,きゅう,"Urgent, sudden; steep",LiqsECN6Z6xf45pj03zn
+たまに,たまに,occasionally,LkLedz8DigczL457Ddck
+昼休み,ひるやすみ,Lunch break,LkcGnYPXaaHamBIZsesY
+折る,おる,"Snap, break; bend",LoSXKT2rkfuvuf3EdVVA
+正月,しょうがつ,New Year,Ls5cURaXvcnVQu7EA4kz
+お祝い,おいわい,"Congratulation, celebration",LyOPliyISY6EpFxXCFLj
+飾る,かざる,"Decorate, Adorn",M3hz1gCCm7dNcsrY45Fk
+だめ,だめ,"useless, no good, hopeless",ME62av23YXFNxP4oNbHq
+治る,なおる,recover,MK20Pf5UbMNr4CTxytsa
+美しい,うつくしい,"beautiful, lovely",MQymU3lVIM8Vt97W2wJW
+経験,けいけんする,experience,MRTS5sHdmgTqGtq7CkOq
+飛行場,ひこうじょう,Airfield,MhGLGoXLxAGjazU1w93T
+決して,けっして,Never,MhZ8Qfpyu4MAmVsh2J6m
+倍,ばい,Double,Mp0C7Z6qgW2yyaiv5sIO
+釣る,つる,Fish,N0wqbvSr1OullpGVW763
+展覧会,てんらんかい,Exhibition,N3YHfeSZPyc6LOQnlLuZ
+凄い,すごい,"Terrific, great",N4JMguUV3SpdzICe96O2
+続く,つづく,Tobecontinued,N8lpOitch9BWIzTM4qWm
+申す,もうす,humbly say,NBj3pHLUliE357psmDG1
+出発,しゅっぱつする,Departure,NE26sHE4KTJI9dCyR2Dk
+おっしゃる,おっしゃる,Tosay(honorific)/ˈɒnəˌrɪfɪk/,NHHZrjemlet5MZp7RVD6
+社会,しゃかい,society,NN8Lw6jHhw9nbdNMxngI
+けんかする,けんかする,quarrel,NdawXBSML7J41UJSoCpd
+祖母,そぼ,Grandmother,NgRHnQjeB8n6xEGDoDX7
+変,へん,"strange, odd",NjHTboYjXg5mf1iZIBdF
+今度,こんど,"This time, next time",NqDYiuuiozZltE8hVGki
+点く,つく,to be switched on,NwZkmrokhN4UHKvjqdav
+喉,のど,Throat,NzNGcajmX0OqA9xQNtMb
+ベル,ベル,Bell,O6Us5CvAUnYenG4gJEyp
+文化,ぶんか,Culture,OBhjyiuaOh5njSYE7BGS
+怖い,こわい,"Scary, Frightening",OPSlww9XXY4puza4hxHa
+趣味,しゅみ,"Hobby, pastime",OQLEvZ5lfitp0CBusZfl
+郊外,こうがい,"suburb, outskirts",OZP78DPLwH8av7tYXf1p
+探す,さがす,"Search, seek, look for",OlB0wzMLBMhEJnHt1HOE
+パソコン,パソコン,Personal computer,OxynlTFmaZc48IKqDHRr
+ビル,ビル,Building,OyEGhVw5DE4nE0ihqUEl
+退院,たいいんする,Discharge,P05pxVcj63vVhf38wExq
+見つかる,みつかる,"be found, be discovered",P2c2df9lCeCukTTYxVW3
+ファックス,ファックス,Fax,PAaVIyydTgYJFyjEYrwh
+踊る,おどる,Dance,PHLDEwTazcvnbNRaeH0e
+～おき,～おき,at intervals of,PT60R3SAkBeDGonGuEs5
+世界,せかい,world,PjqYxsbcdVKQzmFFvzaR
+ステレオ,ステレオ,Stereo,Pl5tBjiIhIGYMWfHu3us
+はず,はず,Should be so,PsC7rlsOAElCJpd3Cxgd
+課長,かちょう,Section manager,Q1nb8wlXE4PusfRrXyKI
+しっかり,しっかり,"firmly, steady",QCTUChvfGr7O5rsXOoeI
+味噌,みそ,Miso bean paste,QDVOznvOHJHm3WVYwMku
+ひどい,ひどい,"terrible, awful, unfair, cruel",QL3yUSbGChvb2305djuw
+競争,きょうそう,"competition, contest",QQHzQwELH7oJ88szoNbi
+科学,かがく,science,QRO1opeEzNFV4Wm85lPS
+事務所,じむしょ,office,QY2OgKAZYrE6A48JuPCn
+用事,ようじ,Business to take care of; tasks; errands,QYsziuR8CCOQF5VLbD9w
+オートバイ,オートバイ,Motorcycle,QZI5EVBZ7y2ZDEZObsGS
+季節,きせつ,Season,Qb2ot7Oo2QtQDL60tAVQ
+準備,じゅんびする,Prepare,Qr8hQ2qd63ShSsCO7VRU
+食料品,しょくりょうひん,Groceries,QvjZ9mArw13VO4HwhwhB
+夢,ゆめ,dream,R1ccRNdocteh3oKOc0ZN
+以上,いじょう,"More than, that is all",RAVOx1oWIV0Ln4yYgBfD
+拝見,はいけんする,Humble seeing or looking at,RBZIiZDKXcDJgvLspCTz
+背中,せなか,back,RMGrXXcOeyJjl2cUE7DF
+ケーキ,ケーキ,Cake,RNT9ISMlzQJgic1acKqN
+レジ,レジ,Cash register,RRQs3t627Scn6jqvecFS
+泥棒,どろぼう,"thief, burglar",RTmLZUa6XQdXsJ3eQzCQ
+適当,てきとう,Appropriate,RXbJM0aKWBp9eSNwG1gC
+急ぐ,いそぐ,Hurry,Re79ljHEEDKf0mNZm13z
+程,ほど,"Degree, extent",Re89olzRjYwgJzqrEpOo
+見える,みえる,"to be visible, to come",Rm8duypwYlOn2obWYpLb
+お土産,おみやげ,Souvenir,RmBM6hnzieW59kwKX3nS
+焼ける,やける,"burn, roast",RsaUanNLDh8zqSevfvnr
+踊り,おどり,Dance,Rwyjnk2fRRjrQsXWauJ2
+答,こたえ,Answer,RxanL6LvK7OgGgzqvkqj
+市,いち,City,S23CGlxZ3gmLn0MB5BgJ
+寺,てら,Buddhist temple,S3MdakiY4XRrlfc0xNM9
+指輪,ゆびわ,Ring,S3ycpMCw70xcnIhyMGeo
+止む,やむ,"Cease, stop",SZrOilDlZY9XtNeNVA8q
+心,こころ,"heart, mind",SdtC8hRVxkoodxNGagVC
+動く,うごく,Move,Sly3YXmt8javzDxfSCLC
+開く,ひらく,Open,SnClYHiaC0wLh1iqujZh
+～月,～つき,-month,SnMfUzO43GeKJBpxZm23
+畳,たたみ,Tatami mat,Soqf0t3DaWsIksAqvFQA
+もらう,もらう,receive,T6dyFYwMXcKW7XEi9wuN
+研究,けんきゅう,research,TCLkbK3kaL2dSf1jTTzB
+返事,へんじ,"Reply, answer",TZesPEsfCQZmXkzT24QG
+下る,くだる,"descend, drop, fall",Tam8UG7slSoeuxUFJxF7
+変わる,かわる,"change, be transformed, vary",Tg6vqYdv87ETTtYOlZwb
+彼ら,かれら,They,TlgK7cZukoxqP0fXuPBc
+アジア,アジア,Asia,TvURSqnJI3qaop7ugFdY
+沸かす,わかす,Boil,TycJEpY8o67hgNH01Z9K
+港,みなと,"Harbor, Port",UK8uW26K7t658beS1RTg
+自由,じゆう,Freedom,UTlW8sQy9fSdfeUtqoWj
+紹介,しょうかい,Introduction,UTxLWybro7D2PvVNLe9a
+浅い,あさい,"shallow, superficial",UXJZclzwnpVVqFpxPpZ3
+客,きゃく,"guest, customer",UbvoXzgNwCMnfWZsuCxW
+パパ,パパ,"Papa, Daddy",UdAZnU4RxEqgmODjdNrs
+できるだけ,できるだけ,As much as possible,UgirvtTokDYan23hYFk9
+空気,くうき,"air, atmosphere",UkJWi6V0wkvvOTZW2STU
+泊まる,とまる,stay (overnight),Uphtb0Qr4GJuzkyMJJk6
+会話,かいわ,conversation,UySSLK8ZBLZNJu13lsTZ
+大体,だいたい,"Approximately, in most cases, in general",V8NKaTpegIiQCX2ZD76S
+育てる,そだてる,"raise, bring up",V99bRN4psugHRrV8djsl
+約束,やくそく,"promise, appointment",VWwZwlHcStAMZq2bR8EH
+焼く,やく,"Bake, Grill",VXm4yzef4aaNFO13klQi
+濡れる,ぬれる,get wet,VeXzu2Qzk0USl2WankRa
+隅,すみ,Corner,ViQmqDozPomQ1uSNZA5e
+受ける,うける,"take (an examination, interview, etc./ˌɛtˈsɛtərə/); receive",VzxBtde2qABRoKJ9VWBr
+赤ちゃん,あかちゃん,Baby,W66dj8HjJINvZvpA46wt
+お祭り,おまつり,Festival,WKh9NRCFyMT6yuXoDGnn
+通う,かよう,commute,WLfeoXuhfMdamfKrTwyB
+輸入,ゆにゅう,Import,WMKzUjXZBeUJZw6eOVUB
+見つける,みつける,"Find, discover",WTOoqpuFF7HPblfQFurn
+タイプ,タイプ,"Type, style",WfX8ljYrNntAdcGVpP7j
+夫,おっと,husband,WjOesvgHTXyZSzV06WmU
+講義,こうぎ,Lecture,WjSCHDPIaEqFfGaNSLna
+枝,えだ,branch,WuoNsq2FsCzKKA8bDfQ3
+湯,ゆ,Hot water,Wzra3cOxf76KZdcfae5B
+女性,じょせい,Woman,X4319tA6BZtUq18bDfDb
+特急,とっきゅう,Limited express,XFrtdsudGyMzdfEPWJPc
+卒業,そつぎょう,Graduation,XKAPfMHNmpZQYyTeiUSi
+びっくりする,びっくりする,be surprised,XWAyrUU93voCbavCKrAC
+ソフト,ソフト,soft; soft hat; software,XfbhpGFImwuwOjcKLs3N
+慣れる,なれる,get accustomed to,Xmmw2157yevEZASl3QLA
+参る,まいる,"Go, come",Xq2WKL8iXqALnNlpgwVA
+行う,おこなう,carry out; conduct,Xw29O9kCxsdRtfZJb7qh
+乗り物,のりもの,vehicle,XzYJMqloilzU4DO1je3z
+テニス,テニス,Tennis,YB25s5YNbsQREZv4Pzav
+恥ずかしい,はずかしい,"Ashamed, embarrassed",YDKRyX09K7lurJx56mEa
+連れる,つれる,take (a person)/ə//ˈpɜːrsən/,YLFsHovV2MB2wYyjvQHN
+無くなる,なくなる,"Disappear, get lost",YPchPfH18s4szueonVuz
+アクセサリー,アクセサリー,Accessory,YQg6jkv4FgS0bSyIENq2
+起こす,おこす,Wake (someone) up,YVRFHIA0NYjwEQMBiqOJ
+最後,さいご,"last, end",YbxiYu7sXnHJS7Vk3MUu
+ガソリン,ガソリン,gasoline,YkOGXr02VjpN9Vm3aj6m
+雲,くも,Cloud,Ykv1lop11g3GcB4cvnlD
+確か,たしか,Certain / Definite,YpUnuStRy0JFlBocZRtD
+数学,すうがく,Mathematics,Z8zQcxI8sGPQeM6cWDmE
+家内,かない,Wife,ZH6CXUTcBxzweUVRZsnH
+簡単,かんたん,Simple,ZKhrQ0pLrRpGfzDKs8RA
+西洋,せいよう,The West,ZROL9nuGnEC2UjzjP24a
+輸出,ゆしゅつする,Export,ZWACA3CxS3PqlVri3r8r
+別れる,わかれる,"Part from, separate",ZaaO33MeIlHGpJ1jpzmE
+小学校,しょうがっこう,Elementary school,Zkdud7rcYHMUIEfQ2ZcK
+割れる,われる,Break,Zlvi3zg4yqqk3FA2MC60
+だから,だから,"Therefore, so",ZmNOqpwyBJxaEgisafLK
+払う,はらう,Pay,ZnJbdlQ4PiGS9teEirZh
+内,うち,inside,ZsiX26aC1DOIi9Emh04w
+それほど,それほど,to that degree,Zu2rWF4DygaUE8BQUrXz
+落る,おちる,"Fall, Drop",a4fwQb0EzBQnCsZdU7rr
+棚,たな,Shelf,a5nuF7uxugGQZLa9NLPh
+ごらんになる,,"to see, to look at",aGEn4Tb3XmPqz1kfirgc
+草,くさ,Grass,aHxSHuIWV9OQ3usESO8z
+安全,あんぜん,"Safety, Security",aLksel48RdG9pU7U3XvD
+笑う,わらう,"laugh, smile",adZ2mcxUauFxZXZyJem3
+歯医者,はいしゃ,Dentist,ae82WaCX2JbjOtkYQhpj
+建て,～だて,"Story, floor",af23VwOFihzpFyRMVBYu
+～やすい,～やすい,easy to do,agapBF02Yp0C6UpZFuK4
+部長,ぶちょう,Department manager,ahkrA3vZlcohjvm3FHER
+親切,しんせつ,Kindness,ajQm9Xf6gyKIOxQTwjtf
+木綿,もめん,Cotton,anfpxjaScTW9LJqdV9NN
+増える,ふえる,"increase, multiply",ataud6mGQ5ChvgngGKn5
+合う,あう,"fit, match",avvAovna5NclU6c4zsP1
+うまい,うまい,"delicious, skillful, fortunate",b6RTo3UjT7aZpGz2bnd0
+毛,け,Hair,bEwBPLe2XliQxR4DArHM
+承知,しょうちする,"Consent, acceptance",bGJrUaEsgT0s9B792XA9
+祈る,いのる,"pray, wish",bJGgZZTvr6ncMi8pqZfH
+優しい,やさしい,"Kind, gentle, easy",bR8pER7aXElUJvcbnMB5
+字,じ,Character,bSNGtDd1u5YK9Lf2UIVG
+動物園,どうぶつえん,Zoo,bSVIhen524n9rvcFtMwi
+空く,すく,"to open, to become empty",bkOlvEGzEfNfpHJ3C478
+プレゼント,プレゼント,"Present, gift",bxtu71z6m6s2iM0Zmpdm
+用意,ようい,Preparation,byFlu0bKhLGw5r6o5c8V
+星,ほし,Star,c3iMQ7ElmYQxHVSzfzex
+月,つき,Moon,cBfkcW5nhrxOYMnxYaue
+すり,すり,Pickpocket,cCq0O8byYJAXoakcQ0dF
+通り,とおり,"Street, Avenue",cOTgKEpN55Yq4Vf0Dks7
+喜ぶ,よろこぶ,"Rejoice, be delighted, be glad",cRU8a35UPSMJXe3apZut
+叱る,しかる,scold,cYRgDMxLYSLDMu6fSx5b
+しばらく,しばらく,A little while,ch9tCNAJCPyD24e8M4At
+決まる,きまる,"Tobeset, fixed",cqcvD3UUPlURh4Da9z12
+～町,～ちょう,~Town,cvT2LeUfOPoMUQInAfA3
+邪魔,じゃま,"Hindrance, intrusion",d4cVajkE2yBN4Wrc1UxA
+非常に,ひじょうに,"extremely, very",d7KeggLtmfisyaSkLsUt
+挨拶,あいさつする,Greeting,d977mGv1uQlAV5zaiaCZ
+～君,～くん,"Mr.ˈmɪstər (junior)ˈdʒuːnjər ~, master ~",dBTPit1x3MiacN7FAvXu
+おいでになる,おいでになる,to be,dOCytDBI3syfzG9fvEBh
+写す,うつす,"Copy, Photograph",dUDDvDrGQc8KtH2M0Jiq
+一杯,いっぱい,Full,dWz4Ay3cUWrksxfJFs5R
+勝つ,かつ,Win,dX4lOWFDAY1zNQq01QvQ
+正しい,ただしい,correct,dYwHaxTfGsqI7ZgNb1o2
+普通,ふつう,Common or usual,ddEgIBh5fj9LCaYIlmBL
+アメリカ,アメリカ,America,ddPifxAx704lAZJi6zdS
+会議,かいぎ,"meeting, conference",deKlwEjuln9saIgzKCtx
+～まま,～まま,As it is,dj9BFrChvzGgxTpwd5tw
+柔らかい,やわらかい,"soft, tender",dnyrdkSqjGoPeCCLbquU
+お見舞い,おみまい,Visit a sick person,dzN7sRaamn8VOkopWxfO
+大抵,たいてい,"Generally, usually",e07mKYyPeWKNhmkGGTdK
+故障,こしょうする,breakdown,e3xk7eJ0HREU1VoHcrjy
+～製,～せい,Made in ~~,eFqwp1FfvPDOQUUS4KGc
+寝坊,ねぼう,Oversleeping,eTkWcVTHbTfZERqBeY2b
+ひげ,ひげ,beard,eUTWUVSbtpObU7zC1i4m
+以外,いがい,"other than, with the exception of, excepting",eVdgFRNYG76Ea2XokaPd
+包む,つつむ,"wrap, cover",ebhpKzLwvZfA5V15I00J
+忘れ物,わすれもの,"Lost article, something forgotten",eqtlXUXSKDHdytG6RCN3
+売り場,うりば,Sales floor,er9TCy3o8g5QiXYO4ai4
+汚れる,よごれる,to become dirty,etkg5PDHORvOYk1bFAxx
+贈り物,おくりもの,Gift,etrBWBhQNOZLCMSzo2FZ
+法律,ほうりつ,Law,euOR4goPYgINEfVVasM8
+とうとう,とうとう,"finally, at last",ewSHsEWqWWeePqyPBPWN
+形,かたち,Shape,fCtNS8JhvUrhNpeWu0Or
+厳しい,きびしい,"Strict, rigorous, hard",fH1XYyKCHoLHKvyIPKAP
+生きる,いきる,live,fIkF9pfKiJEqKs2O0dko
+道具,どうぐ,tool,fT3PD3oER00b2NuSdX1C
+そんな,そんな,Such,fViHr7CLm6fFubHxe951
+ステーキ,ステーキ,Steak,fg9PKi4P3sANkazapQgE
+スーツケース,スーツケース,Suitcase,fpGS53CtlkCgkdZFXmR6
+会場,かいじょう,"venue, meeting place",fppjquXntg7khbiqZdyV
+日,にち,"sun, sunshine, day",fy85mXe6kNdMyHlf5Vj3
+鏡,かがみ,Mirror,gAYYkEKGlIE2W4rZ0akv
+交通,こうつう,"Traffic, Transportation",gUGTKcrP8Hygb16KtmxW
+遠慮,えんりょする,"restraint, reserve, hesitation",gVyqwgBPoBzvOHDloUcx
+花見,はなみ,Cherry blossom viewing,glIS9422YVXTxLt9qLdq
+真中,まんなか,Center,gt2K7zgxw5FRIRtk8YLm
+いじめる,いじめる,"Bully, torment",h1d72SfTyx5pw3rKqTHH
+安心,あんしん,"Peace of mind, relief",hArcLO2RVlF3DmVD8J3k
+日記,にっき,Diary,hBtBDqowTWf99dpi42Ti
+例えば,たとえば,For example,hHQ3uXMaMB364278MnFY
+伺う,うかがう,"visit, ask, hear, come",hQQHEQQAeqIc7QHRQyhY
+心配,しんぱいする,"worry, concern",hfFy6q6ACVGZTh0ZOAOx
+生活,せいかつする,"Life, Living",hnh8iw2fVVDry8XIhebs
+驚く,おどろく,"Surprised, astonished",ht9PKT3tqJdbgJiYm9yL
+スーパー (マーケット),スーパー (マーケット),Supermarket,iCadVJj3qFaOenoM3Pl2
+いくら～ても,いくら～ても,However much one may ~/~,iDbYkzesslJNj4iOS876
+漫画,まんが,Manga,iJcSxbrHoFk8kh9tkcIc
+是非,ぜひ,By all means,iP08Qu7k4v07Jv1ItySt
+帰り,かえり,"Return, coming back",ie9ZGNamxfXKqQYIox4Z
+ガソリンスタンド,ガソリンスタンド,Gas station,ikb2WXM1PYMsDBTryAc6
+役に立つ,やくにたつ,Helpful or useful,imi0D6k5frnyL30756Rq
+泣く,なく,Cry,inQuu6DOml5p9OtdB6Vy
+汽車,きしゃ,Steam train,itV0nVlFaBkIUeM7mTXz
+揺れる,ゆれる,"Shake, Sway",izalv4NaFgiJY8kr16VP
+場所,ばしょ,"Place, location",jMjUO8v4qsH4SPqrthRV
+投げる,なげる,"Pitch, cast away",jr5JdNM1X7Sf0XOJ7M7a
+消しゴム,けしゴム,Eraser,jw2JRXjRdeWWJxlwEbNY
+かまう,,"mind, care about",jyyuIXtrtmz8eCa7CPAo
+集まる,あつまる,gather,k9z1BF7NK7Z9u3eAuxi3
+不便,ふべん,Inconvenience,kFpJCLDdUeYs87H99T7q
+つもり,つもり,"intention, plan",kGJJyEf6SxAbMrvJEvNC
+眠る,ねむる,sleep,kGzzg6f14w3JBtTBMgop
+お宅,おたく,Your home,kKL3Zmep5fBpaA7WaBAz
+昔,むかし,Past,kSCVtyCnBchdNkN7EIpz
+警察,けいさつ,police,kXbSgbpQSvSzXAEoGkpF
+考える,かんがえる,Think (about); consider,kXkm4VwkSXRKNpZLcBx4
+危険,きけん,"danger, risk, hazard",kdoMfdYc9mC6rCEMhhZs
+寂しい,さびしい,Lonely,kjOECbAZSJNc2pgrvx16
+太る,ふとる,gain weight,koctiT1QY7BKpjh6vAZb
+国際,こくさい,International,kuExLuQp87KkJum2qKcE
+歴史,れきし,History,kyagNBwKUa39f3yAVYBs
+チェックする,チェックする,Check do,l2ppMgv9d9jQDOoN2NIA
+男性,だんせい,"man, male",lCnwWZgszRNBB2hXNE6f
+表,ひょう,"surface, front, outside",lGG3RySNqZxd6FDdZzDP
+壊れる,こわれる,break,lHVqyyy93lgO2Nukj80Y
+発音,はつおん,Pronunciation,lKtgdQYJRz8tcarxXv7c
+地理,ちり,geography,lL0lpInKOFAbfGn66R8h
+よろしい,よろしい,"Good, OK, all right",lYczWCL7gFdAwxTUur5s
+お陰,おかげ,Thanks to,lmcZ2r7TyCDtEgTSVQEb
+放送,ほうそうする,Broadcasting,loOw1Lj3hgEgbijQn8Qn
+大分,だいぶん,"Considerably, to a large extent",lobQJxrOcekkmX3jKdiA
+向かう,むかう,head towards,ltxBZ1tEXtYeJ8alzDu7
+必ず,かならず,Certainly,lucLurCmjWEPGa5PlJzE
+支度,したくする,preparation,lziMWaL6gK27eInF4gdu
+予定,よてい,"Plan, arrangement, schedule",m5KmekMeeoaWHTOjl3xX
+入院,にゅういんする,Hospitalization,m7p6pYUZj0fvSU8nToAk
+暖房,だんぼう,Heating,mF0vXLRAXHrlot2AZzxa
+海岸,かいがん,"coast, seashore",mJiOjToCLF4ZbXvdltkB
+苦い,にがい,Bitter,mKEcDR0oIKFZFzTVjRPe
+テキスト,テキスト,text,mLB98OYfvRENMIpuABJv
+新聞社,しんぶんしゃ,Newspaper company,mNy2kKJVRdL9vb9oZwOo
+時代,じだい,"age, period, epoch, era",mRnBoAuTCmrcozkj7DZm
+原因,げんいん,"Cause, origin, source",mad41YIBSlxfRwRViwPG
+光る,ひかる,"Shine, glitter",mdy4b3fqeUixiR6kb7MR
+盗む,ぬすむ,steal,mgJWupkKE4nVsmgBgGqV
+機会,きかい,"chance, opportunity",mnjyFM8SEsiTHzuCjrYx
+噛む,かむ,"bite, chew",mtWvigrLQJfIivyWcyLr
+貿易,ぼうえき,Trade,n0qChDiBIVH8s6O4hhCQ
+随分,ずいぶん,Extremely,nCKzu95cmDzfe4vWMn0P
+理由,りゆう,Reason,nFIHZJe6HMmfff3aYHZ0
+伝える,つたえる,"Convey, tell, report",nHRDzVAzmf13TS1y9oGT
+遊び,あそび,Play,nHjI0hOkDQv89DF0HD1h
+招待,しょうたいする,Invitation,nMCrAIjrT8QTst4qaVBo
+意見,いけん,"opinion, view, idea",nUSQ4P9scJSJuwsjT57x
+壁,かべ,Wall,nkOk0strKQElVq2CVDsV
+石,いし,Stone,nmcB6yzS7efr3CEbg3bh
+髪,かみ,Hair,nsn5WJcxCFxRrhxYT6oC
+この間,このあいだ,The other day,o1WOxdnaqYt31w1bVLlo
+楽む,たのしむ,Enjoy,o5MjBrhOGqlgP0EhjMqJ
+悲しい,かなしい,Sad,o88hIRWYoB2bwS7295vz
+楽しみ,たのしみ,"Pleasure, joy",o8bQPYha8OpgXJTqiicF
+娘,むすめ,Daughter,oDYMj9VIKMNjeQDO71wi
+過ぎる,すぎる,"Exceed, go beyond",oGN2WOeAW3TMgjDbm2kX
+田舎,いなか,countryside,oJ0PxBDLcvvxdQwrQ7yE
+最も,もっとも,most,oVqotm5SvcJD129VEf1e
+無理,むり,"unreasonable, impossible",oWIj5eUY1C31vqEQwSLl
+ご存じ,ごぞんじ,Acquainted,oWceIrooWzuFFyNGdE9q
+血,ち,Blood,ocZqDlyYWZwItcI94qB2
+親,おや,Parent,odNcN6biEjhk9Eu9shVG
+ガラス,ガラス,glass,oet7tajt3J7vXd2c3w5m
+教会,きょうかい,Church,og0YqY7dHTjQ811qB6o1
+まず,まず,"First, to start with",ogdhAOanQKMxuciQW3OH
+世話,せわする,taking care of,okeFmRSR6esRi1XS5Cap
+ちっとも,ちっとも,not at all,olunRcM5Sg5v7mZ4XUWD
+電報,でんぽう,telegram,ooVkM5NwAM8enj0yr5Al
+旅館,りょかん,Japanese inn,os735xKKlvJH06mtvZ4E
+近所,きんじょ,neighborhood,ovMf1rSuWpp1RUraJ7Ki
+熱心,ねっしん,Enthusiastic,pAh75PDFG3t9wNKIXmgv
+取り替える,とりかえる,"Exchange, replace",pDiOuijcJfZSUDkzarqg
+場合,ばあい,"case, situation",pE8OUSBptOZHyyECLHDY
+小鳥,ことり,Small bird,pGMeHxQi77wevyuRb4fU
+すると,すると,"Then, and so",pGOTFqImOshEWLSZfBek
+盛ん,さかん,"prosperous, active, thriving",pIsae9ZTz3q0MlZIhova
+残る,のこる,"remain, be left",pel6IKKRg0JkmNj2uo9u
+事故,じこ,accident,phRfgJrBbC8AJ2dtu91n
+昼間,ひるま,"daytime, during the day",pibCHoDSobypWduJIDD2
+一生懸命,いっしょうけんめい,With utmost effort,ppYq339WKyjhXdKYTvUa
+続ける,つづける,"continue, keep up",psC1dKcQgbn3PoDrZqj4
+手伝う,てつだう,Help,pubptkRY2Hky8kt05rYl
+翻訳,ほんやく,Translation,pwCftJ5L5levYMjNhKfM
+仕方,しかた,Way of doing something,q6bgyZlHEcXFYA2wSVrK
+上がる,あがる,"rise, go up",q6oNv8WtQDmC8KuLNNkq
+水泳,すいえい,Swimming,q7Ex0axALdwm9ZmCUmpH
+申し上げる,もうしあげる,"humbly say, humbly tell",q9OkOyzp9PGXMF5LSUeb
+沸く,わく,boil,qC4e8gg8x3afHxu1A4e6
+エスカレーター,エスカレーター,escalator,qCzpQkn6A9YX5va3E5pG
+経済,けいざい,"Economy, Economics, Finance",qE2hivrZ4cFL7hBFdSye
+込む,こむ,crowded,qN6gRPgyETRecpoP82CH
+拾う,ひろう,Pick up,qgRPUKox3MChDlOI7878
+留守,るす,"Absence, not at home",qwKyWJ2e1QtdLiYaNSSJ
+引っ越す,ひっこす,Move,qzCmjMt2EL4hJCpBcR35
+この頃,このごろ,"These days, nowadays",r01eh7qVRgD5d0ae8cd1
+水道,すいどう,Water supply,r8eUFlMvynBWjJyyVO8B
+珍しい,めずらしい,"rare, unusual",rHJEYC7P24CS86LXXg5X
+塗る,ぬる,"paint, plaster",rLq6KvSe62EJe7gOOUhJ
+～会,～かい,Meeting,rMwRUiYxEyMssFNKEcDh
+下げる,さげる,"Lower, Hang",rXguJvC0qOuNtRrHQ75v
+お礼,おれい,"Gratitude, thanking, gift of appreciation, bow",racJzKaVbWtBW0OlU2Xq
+文法,ぶんぽう,Grammar,rfIFsdMYtU2YBYdEMEC8
+冷える,ひえる,"grow cold, cool down",rfIZLHf8Yd90Lsp633P6
+産業,さんぎょう,industry,rh7GOSHRaxA7Q1PLrqjp
+番組,ばんぐみ,Program,rh8AE6YUt5UobheSUdup
+細かい,こまかい,"Fine, minute",rl3mAwXL1HeiaRyI5lMg
+～おわる,～おわる,to finish doing,rzQHWU733Ch6wM9gOwAe
+はっきり,はっきり,"clearly, distinctly",s38fVQC6Yv7geGrjjPtn
+具合,ぐあい,"Condition, state, health",s3QSBW04dRM03HvMhmt3
+直す,なおす,"Correct, Fix",s8LaKS0Z59mboWV3dfEZ
+両方,りょうほう,"Both sides, both parties",sC1UmDKEJ1dVz0ZtsF6T
+最初,さいしょ,"Beginning, first",sC3cLa7cavR25sTlK9qM
+明日,あす,tomorrow,sD4wItmpKB5mTtyHD1TV
+市民,しみん,Citizen,sO3NKycDNXjnqoI4kql8
+鳴る,なる,"Sound, Ring",sPcIMWL37X1IG2ht4FkS
+首,くび,neck,sWhEvR847Lq7pCiNf3ub
+生産,せいさんする,Production,sXUH1DLj3Llpc3AthLuQ
+大事,だいじ,"Important, valuable, serious matter",sZGEAkxZQDSvVcCp0ep5
+思う,おもう,"Think, feel",sbtBek97uqYWJL1faV5c
+習慣,しゅうかん,Custom,sfY4BD5ft4Zv1fdxTGHg
+様,さま,"Manner, way, kind",sjxESYtXVZJb5Mp84bFw
+召し上がる,めしあがる,Eat or drink,solUhJioJdOJfdsMTb8b
+味,あじ,Taste,t2CtEGogBaiSJ2eONvDQ
+壊す,こわす,break,t3F7VHGaZ9We0D0S1tXL
+いただく,頂く,"receive, eat, drink",tA9EFW1cSX2l3L4BCtuu
+～(に) ついて,～(に) ついて,"About, concerning",tD0Mk2r8Lv7VHF7v85pi
+もうすぐ,もうすぐ,Very soon,tDlBUAKU9IMpj3U8TLus
+スーツ,スーツ,Suit,tEHQNrJc27147st1XLU3
+コンピュータ; コンピューター,コンピュータ; コンピューター,Computer,tEe6Gs9vBEB6wgcpOzfC
+葉,は,Leaf,tIBAzfkMtZu8lHCda37F
+こう,こう,like this,tLNi0p8bTo7JmBhe7R3a
+あげる,あげる,give,tZvG2G5KqjgJAlsTB9J0
+音,ね,"Sound, Note",taKbuzPowuYPFBvY5JCR
+～式,～しき,"ceremony, style",tdDSlAA3lbt08ofTW7al
+予習,よしゅう,Preparation for lessons,temjzsTAGkWK7tepgOCx
+君,きみ,You,tnW0l7vPLmnjXm6F8m99
+痩せる,やせる,lose weight,uCeQRvJnnB7lHbkAkChK
+亡くなる,なくなる,Pass away,uHc0joBKa2TNVRklZPPE
+失礼,しつれい,"Discourtesy, impoliteness; Excuse me",uJB2yWXu1gWs9Hp1l0wn
+都合,つごう,"circumstances, convenience",uK8koKeRSApZp2Zni3Ij
+足りる,たりる,"suffice, to be enough",uXFSRBKwrgE7qAmSe9kq
+送る,おくる,"send, dispatch",udIyc6bfeait4pMzu4Ml
+暮れる,くれる,"get dark, come to an end",uhPMSI7CaFcnzydIgptp
+森,もり,Forest,uiQYYra08q2OlWAMZWxU
+糸,いと,Thread,usKumACmg9nLS4xUeCNv
+そんなに,そんなに,So much,uvMdw7i2JimoYR0qQ4tP
+もちろん,もちろん,Of course,v74QDp3VJqaYIF3NV6BW
+台風,たいふう,Typhoon,vBtaZ4eIfr5hmaMpkT49
+戦争,せんそう,War,vC5bSxJ8G1xAhX9J2qyA
+電灯,でんとう,Electric light,vYkxiNQQmEohHzvMYOq9
+パート (タイム),パート (タイム),Part-time worker,vhCNVtyorkjqcX5VborU
+予約,よやく,Reservation,voCayMjoOIWcAo9GT0rG
+点,てん,"Mark, score, grade, point, dot",vpqOj2XUTtJGUWVO2xAi
+以下,いか,"or less, below",wILN0NB5FxRJZz6MKnw7
+火事,かじ,Fire,wIckvOQkTqyJeFEn7Ays
+やはり; やっぱり,やはり; やっぱり,"As I thought, after all.",wJBZPyqpH4jf2AWMUwwi
+屋上,おくじょう,Rooftop,wWvlR9Xgk7OS7u0GluaA
+レポート; リポート,レポート; リポート,Report,wX31cXEIor0Nd15mFlxJ
+必要,ひつよう,Necessary,wY7vl2a3oCJignNFlJtx
+間に合う,まにあう,be in time for,wtyu72OL9qSUI5lFe8ff
+席,せき,Seat,x2gt6kYG0O907aNgwTcm
+舟,ふね,boat,x6jQAompZtxxoQyxi4dn
+注意,ちゅうい,"Caution, Attention",x9JimsuE2dNEW8xBw3MN
+文学,ぶんがく,Literature,xHvUvtzzILBVjbzxOeo6
+住所,じゅうしょ,Address,xIRdPuxGnit8ElR8mcv1
+下着,したぎ,Underwear,xJhwMnPxNU8OoD4AzZGw
+運転手,うんてんしゅ,Driver,xaX9zCE2xuHNsgnXflmq
+気,き,"Spirit, mood",xlpE0bR3QgPCps97kkvx
+割合,わりあい,"Rate, ratio, percentage",y1S5X0GVcuLPC9h1wetJ
+先輩,せんぱい,Senior member,yMMR69ojcJa1bFeXrMc4
+なさる,なさる,to do (honorific)ˈɒnəˌrɪfɪk,yMQRUZsWSGLQOyBHT4EG
+決める,きめる,decide,yQCiX99Pu0A3CJ88HWYB
+運ぶ,はこぶ,"transport, carry",yQzrOsKdUteqgegnavbT
+～続ける,～つづける,Continue,yYTkk65D5Iv80lJapt6a
+進む,すすむ,"Advance, proceed",ygxhRmDCsJbHScft9BPQ
+引き出し,ひきだし,drawer,ynqBIIZYGchBa6hFhlbK
+似る,にる,"resemble, be similar",ysyEKoADLzECiWm7gFvc
+運転,うんてん,Driving,yvEUUt6x55EKuw9kofyc
+乗り換える,のりかえる,transfer (trains/buses),z5gLgyQkhUpKL7njSkyi
+～家,～け,Specialist,zBTzLpQG2UfikTkR6BFF
+戻る,もどる,Return,zBy9QzbpdooXfqQ0xUHD
+建てる,たてる,build,zIHoXDROZtEyQ6G0llJO
+着物,きもの,Kimono,zN9WUD4sQHD03t3CZxvk
+相談,そうだんする,consultation,zScZh4YJmXd9MH5uerV1
+計画,けいかくする,"plan, project, schedule",zWu7YLkgAmVCXx1rZqWV
+サラダ,サラダ,salad,zcHTqZbYcOsjVMvgE0BH
+力,ちから,"Strength, Power",zdnuZGH08zLKYfZpr3v3
+景色,けしき,"Scenery, landscape",zjcRNmhwWOK4Y9DHcJAv
+落す,おとす,"Drop, Lose",zzGi9AiYNDAe21aeRTia
